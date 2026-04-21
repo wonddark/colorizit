@@ -43,8 +43,8 @@ describe('buildCss', () => {
 
   it('includes AA background vars', () => {
     const css = buildCss(palette, neutral, tinted, background)
-    expect(css).toContain('--bg-light:')
-    expect(css).toContain('--bg-dark:')
+    expect(css).toMatch(/--bg-light:\s+oklch\(/)
+    expect(css).toMatch(/--bg-dark:\s+oklch\(/)
   })
 })
 
@@ -79,6 +79,7 @@ describe('buildJson', () => {
     expect(json.background.light.hex).toMatch(/^#[0-9a-f]{6}$/i)
     expect(typeof json.background.light.contrastRatio).toBe('number')
     expect(['neutral', 'tinted', 'generated']).toContain(json.background.light.source)
+    expect(json.background.light.oklch).toBeUndefined()
   })
 
   it('includes background.dark with hex, contrastRatio, source', () => {
@@ -86,5 +87,6 @@ describe('buildJson', () => {
     expect(json.background.dark.hex).toMatch(/^#[0-9a-f]{6}$/i)
     expect(typeof json.background.dark.contrastRatio).toBe('number')
     expect(['neutral', 'tinted', 'generated']).toContain(json.background.dark.source)
+    expect(json.background.dark.oklch).toBeUndefined()
   })
 })
