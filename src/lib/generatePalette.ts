@@ -32,6 +32,41 @@ const DARK_STEPS = [
   { l: 0.945, c: 0.030 },
 ] as const
 
+const GRAY_LIGHT_STEPS = [
+  { l: 0.992 },
+  { l: 0.977 },
+  { l: 0.957 },
+  { l: 0.935 },
+  { l: 0.912 },
+  { l: 0.889 },
+  { l: 0.855 },
+  { l: 0.775 },
+  { l: 0.604 },
+  { l: 0.566 },
+  { l: 0.450 },
+  { l: 0.180 },
+] as const
+
+const GRAY_DARK_STEPS = [
+  { l: 0.130 },
+  { l: 0.163 },
+  { l: 0.193 },
+  { l: 0.225 },
+  { l: 0.255 },
+  { l: 0.285 },
+  { l: 0.340 },
+  { l: 0.430 },
+  { l: 0.490 },
+  { l: 0.547 },
+  { l: 0.745 },
+  { l: 0.955 },
+] as const
+
+const GRAY_TINT_C = [
+  0.003, 0.004, 0.005, 0.006, 0.006, 0.007,
+  0.007, 0.008, 0.006, 0.005, 0.004, 0.003,
+] as const
+
 export type ColorStep = {
   hex: string
   oklch: string
@@ -52,6 +87,33 @@ function buildStep(l: number, c: number, h: number): ColorStep {
   return {
     hex: formatHex(clamped) ?? '#000000',
     oklch: formatOklchString(clamped.l, clamped.c ?? 0, clamped.h ?? h),
+  }
+}
+
+export type GrayPalettes = {
+  neutral: PaletteResult
+  tinted:  PaletteResult
+}
+
+export function generateGrayPalettes(input: string): GrayPalettes {
+  const parsed = parse(input)
+  if (!parsed) throw new Error(`Invalid color: ${input}`)
+
+  const oklch = toOklch(parsed)
+  const h = oklch?.h
+  const hasHue = h !== undefined && !isNaN(h)
+
+  return {
+    neutral: {
+      light: GRAY_LIGHT_STEPS.map(({ l }) => buildStep(l, 0, 0)),
+      dark:  GRAY_DARK_STEPS.map(({ l }) => buildStep(l, 0, 0)),
+    },
+    tinted: {
+      light: GRAY_LIGHT_STEPS.map(({ l }, i) =>
+        buildStep(l, hasHue ? GRAY_TINT_C[i] : 0, hasHue ? h! : 0)),
+      dark: GRAY_DARK_STEPS.map(({ l }, i) =>
+        buildStep(l, hasHue ? GRAY_TINT_C[i] : 0, hasHue ? h! : 0)),
+    },
   }
 }
 

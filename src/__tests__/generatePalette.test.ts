@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { formatHex } from 'culori'
-import { generatePalette } from '../lib/generatePalette'
+import { generatePalette, generateGrayPalettes } from '../lib/generatePalette'
 
 describe('generatePalette', () => {
   it('returns 12 light and 12 dark steps', () => {
@@ -66,5 +66,57 @@ describe('generatePalette', () => {
       expect(Math.abs(r - g)).toBeLessThanOrEqual(2)
       expect(Math.abs(g - b)).toBeLessThanOrEqual(2)
     }
+  })
+})
+
+describe('generateGrayPalettes', () => {
+  it('returns neutral and tinted each with 12 light and 12 dark steps', () => {
+    const { neutral, tinted } = generateGrayPalettes('#3D63DD')
+    expect(neutral.light).toHaveLength(12)
+    expect(neutral.dark).toHaveLength(12)
+    expect(tinted.light).toHaveLength(12)
+    expect(tinted.dark).toHaveLength(12)
+  })
+
+  it('each step has hex and oklch properties', () => {
+    const { neutral, tinted } = generateGrayPalettes('#3D63DD')
+    const allSteps = [
+      ...neutral.light, ...neutral.dark,
+      ...tinted.light,  ...tinted.dark,
+    ]
+    for (const step of allSteps) {
+      expect(step.hex).toMatch(/^#[0-9a-f]{6}$/i)
+      expect(step.oklch).toMatch(/^oklch\(/)
+    }
+  })
+
+  it('neutral steps are achromatic (r ≈ g ≈ b)', () => {
+    const { neutral } = generateGrayPalettes('#3D63DD')
+    for (const step of [...neutral.light, ...neutral.dark]) {
+      const hex = step.hex.toLowerCase()
+      const r = parseInt(hex.slice(1, 3), 16)
+      const g = parseInt(hex.slice(3, 5), 16)
+      const b = parseInt(hex.slice(5, 7), 16)
+      expect(Math.abs(r - g)).toBeLessThanOrEqual(2)
+      expect(Math.abs(g - b)).toBeLessThanOrEqual(2)
+    }
+  })
+
+  it('tinted steps differ from neutral steps when input has a hue', () => {
+    const { neutral, tinted } = generateGrayPalettes('#3D63DD')
+    const differs = neutral.light.some((s, i) => s.hex !== tinted.light[i].hex)
+    expect(differs).toBe(true)
+  })
+
+  it('tinted falls back to neutral when input is achromatic', () => {
+    const { neutral, tinted } = generateGrayPalettes('#808080')
+    for (let i = 0; i < 12; i++) {
+      expect(tinted.light[i].hex).toBe(neutral.light[i].hex)
+      expect(tinted.dark[i].hex).toBe(neutral.dark[i].hex)
+    }
+  })
+
+  it('throws on invalid input', () => {
+    expect(() => generateGrayPalettes('not-a-color')).toThrow('Invalid color')
   })
 })
