@@ -34,7 +34,7 @@ export function PaletteScale({ steps, mode, showLegend }: Props) {
       >
         <div className="flex gap-1">
           {steps.map((step, i) => {
-            const useDarkLabel = mode === 'light' ? i < 8 : i >= 9
+            const useDarkLabel = mode === 'light' && i < 8
             return (
               <div
                 key={i}
@@ -43,7 +43,6 @@ export function PaletteScale({ steps, mode, showLegend }: Props) {
                 <div
                   className="h-16 rounded-md flex items-end justify-center pb-1.5"
                   style={{ background: step.hex }}
-                  title={`${i + 1} — ${PURPOSES[i]}\n${step.hex}`}
                 >
                   <span
                     className="text-[10px] font-bold"
@@ -53,7 +52,8 @@ export function PaletteScale({ steps, mode, showLegend }: Props) {
                   </span>
                 </div>
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-[10px] rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                  {step.hex}
+                  <div className="text-white/50">{PURPOSES[i]}</div>
+                  <div>{step.hex}</div>
                 </div>
               </div>
             )
