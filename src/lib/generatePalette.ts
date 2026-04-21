@@ -1,4 +1,4 @@
-import { parse, converter, formatHex, clampChroma } from 'culori'
+import { parse, converter, formatHex, clampChroma, wcagContrast } from 'culori'
 
 const toOklch = converter('oklch')
 
@@ -135,4 +135,81 @@ export function generatePalette(input: string): PaletteResult {
     light: LIGHT_STEPS.map(({ l, c }) => buildStep(l, c, h)),
     dark:  DARK_STEPS.map(({ l, c }) => buildStep(l, c, h)),
   }
+}
+
+export type BackgroundSource = 'neutral' | 'tinted' | 'generated'
+
+export type BackgroundColor = ColorStep & {
+  source: BackgroundSource
+  contrastRatio: number
+}
+
+export type BackgroundResult = {
+  light: BackgroundColor
+  dark:  BackgroundColor
+}
+
+function pickBackground(
+  foregroundHex: string,
+  candidate: ColorStep,
+  source: 'neutral' | 'tinted',
+): BackgroundColor | null {
+  const ratio = wcagContrast(candidate.hex, foregroundHex)
+  if (ratio >= 4.5) {
+    return { ...candidate, source, contrastRatio: Math.round(ratio * 10) / 10 }
+  }
+  return null
+}
+
+function binarySearchBackground(
+  foregroundHex: string,
+  mode: 'light' | 'dark',
+  tintedStep: ColorStep,
+): BackgroundColor {
+  const tintedOklch = toOklch(parse(tintedStep.hex)!)
+  const rawH = tintedOklch?.h
+  const rawC = tintedOklch?.c ?? 0
+  const hasHue = rawH !== undefined && !isNaN(rawH)
+  const searchH = hasHue ? rawH! : 0
+  const searchC = hasHue ? rawC : 0
+
+  let lo = mode === 'light' ? GRAY_LIGHT_STEPS[0].l : 0.0
+  let hi = mode === 'light' ? 1.0 : GRAY_DARK_STEPS[0].l
+
+  // Start with the extreme (lightest for light mode, darkest for dark mode)
+  let bestStep = buildStep(mode === 'light' ? hi : lo, searchC, searchH)
+
+  for (let i = 0; i < 40; i++) {
+    const mid = (lo + hi) / 2
+    const candidate = buildStep(mid, searchC, searchH)
+    const ratio = wcagContrast(candidate.hex, foregroundHex)
+    if (ratio >= 4.5) {
+      bestStep = candidate
+      // Narrow toward step 1 (less extreme) while still passing
+      if (mode === 'light') hi = mid
+      else lo = mid
+    } else {
+      // Need to go more extreme
+      if (mode === 'light') lo = mid
+      else hi = mid
+    }
+  }
+
+  const finalRatio = wcagContrast(bestStep.hex, foregroundHex)
+  return { ...bestStep, source: 'generated', contrastRatio: Math.round(finalRatio * 10) / 10 }
+}
+
+export function generateBackground(
+  palette: PaletteResult,
+  grays: GrayPalettes,
+): BackgroundResult {
+  const compute = (mode: 'light' | 'dark'): BackgroundColor => {
+    const fg = palette[mode][11].hex
+    return (
+      pickBackground(fg, grays.neutral[mode][0], 'neutral') ??
+      pickBackground(fg, grays.tinted[mode][0], 'tinted') ??
+      binarySearchBackground(fg, mode, grays.tinted[mode][0])
+    )
+  }
+  return { light: compute('light'), dark: compute('dark') }
 }

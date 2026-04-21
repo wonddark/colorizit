@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { formatHex } from 'culori'
-import { generatePalette, generateGrayPalettes } from '../lib/generatePalette'
+import { wcagContrast, formatHex } from 'culori'
+import { generatePalette, generateGrayPalettes, generateBackground } from '../lib/generatePalette'
+import type { PaletteResult, ColorStep } from '../lib/generatePalette'
 
 describe('generatePalette', () => {
   it('returns 12 light and 12 dark steps', () => {
@@ -118,5 +119,53 @@ describe('generateGrayPalettes', () => {
 
   it('throws on invalid input', () => {
     expect(() => generateGrayPalettes('not-a-color')).toThrow('Invalid color')
+  })
+})
+
+describe('generateBackground', () => {
+  const palette = generatePalette('#3D63DD')
+  const grays   = generateGrayPalettes('#3D63DD')
+  const result  = generateBackground(palette, grays)
+
+  it('returns BackgroundColor for both light and dark modes', () => {
+    expect(result.light.hex).toMatch(/^#[0-9a-f]{6}$/i)
+    expect(result.dark.hex).toMatch(/^#[0-9a-f]{6}$/i)
+    expect(result.light.oklch).toMatch(/^oklch\(/)
+    expect(result.dark.oklch).toMatch(/^oklch\(/)
+  })
+
+  it('light background achieves >= 4.5:1 against primary light step 12', () => {
+    const ratio = wcagContrast(result.light.hex, palette.light[11].hex)
+    expect(ratio).toBeGreaterThanOrEqual(4.5)
+  })
+
+  it('dark background achieves >= 4.5:1 against primary dark step 12', () => {
+    const ratio = wcagContrast(result.dark.hex, palette.dark[11].hex)
+    expect(ratio).toBeGreaterThanOrEqual(4.5)
+  })
+
+  it('source is neutral, tinted, or generated', () => {
+    expect(['neutral', 'tinted', 'generated']).toContain(result.light.source)
+    expect(['neutral', 'tinted', 'generated']).toContain(result.dark.source)
+  })
+
+  it('contrastRatio matches actual computed contrast to one decimal place', () => {
+    const actualLight = Math.round(wcagContrast(result.light.hex, palette.light[11].hex) * 10) / 10
+    const actualDark  = Math.round(wcagContrast(result.dark.hex,  palette.dark[11].hex)  * 10) / 10
+    expect(result.light.contrastRatio).toBe(actualLight)
+    expect(result.dark.contrastRatio).toBe(actualDark)
+  })
+
+  it('returns best-effort generated background when AA is physically unachievable', () => {
+    // A near-white foreground (#d4d4d4) makes AA impossible against any lighter background
+    const lightFg: ColorStep = { hex: '#d4d4d4', oklch: 'oklch(85% 0 0)' }
+    const fakePalette: PaletteResult = {
+      light: [...generatePalette('#3D63DD').light.slice(0, 11), lightFg],
+      dark:  generatePalette('#3D63DD').dark,
+    }
+    const r = generateBackground(fakePalette, grays)
+    // Neither neutral (#f9f9f9) nor tinted can achieve 4.5:1 against #d4d4d4
+    expect(r.light.source).toBe('generated')
+    expect(r.light.hex).toMatch(/^#[0-9a-f]{6}$/i)
   })
 })
