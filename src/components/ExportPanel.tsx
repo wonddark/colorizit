@@ -3,41 +3,83 @@ import type { PaletteResult } from '../lib/generatePalette'
 
 type Tab = 'css' | 'json'
 
-function buildCss(palette: PaletteResult): string {
-  const lines: string[] = [':root {', '  /* Light */']
+export function buildCss(
+  palette: PaletteResult,
+  neutralGray: PaletteResult,
+  tintedGray: PaletteResult,
+): string {
+  const lines: string[] = [':root {', '  /* Primary — Light */']
   palette.light.forEach((step, i) => {
     lines.push(`  --color-${i + 1}: ${step.oklch};`)
   })
   lines.push('')
-  lines.push('  /* Dark */')
+  lines.push('  /* Primary — Dark */')
   palette.dark.forEach((step, i) => {
     lines.push(`  --color-dark-${i + 1}: ${step.oklch};`)
+  })
+  lines.push('')
+  lines.push('  /* Neutral Gray — Light */')
+  neutralGray.light.forEach((step, i) => {
+    lines.push(`  --gray-${i + 1}: ${step.oklch};`)
+  })
+  lines.push('')
+  lines.push('  /* Neutral Gray — Dark */')
+  neutralGray.dark.forEach((step, i) => {
+    lines.push(`  --gray-dark-${i + 1}: ${step.oklch};`)
+  })
+  lines.push('')
+  lines.push('  /* Tinted Gray — Light */')
+  tintedGray.light.forEach((step, i) => {
+    lines.push(`  --gray-tinted-${i + 1}: ${step.oklch};`)
+  })
+  lines.push('')
+  lines.push('  /* Tinted Gray — Dark */')
+  tintedGray.dark.forEach((step, i) => {
+    lines.push(`  --gray-tinted-dark-${i + 1}: ${step.oklch};`)
   })
   lines.push('}')
   return lines.join('\n')
 }
 
-function buildJson(palette: PaletteResult): string {
+export function buildJson(
+  palette: PaletteResult,
+  neutralGray: PaletteResult,
+  tintedGray: PaletteResult,
+): string {
   return JSON.stringify(
     {
       light: Object.fromEntries(palette.light.map((s, i) => [String(i + 1), s.hex])),
       dark:  Object.fromEntries(palette.dark.map((s, i)  => [String(i + 1), s.hex])),
+      neutralGray: {
+        light: Object.fromEntries(neutralGray.light.map((s, i) => [String(i + 1), s.hex])),
+        dark:  Object.fromEntries(neutralGray.dark.map((s, i)  => [String(i + 1), s.hex])),
+      },
+      tintedGray: {
+        light: Object.fromEntries(tintedGray.light.map((s, i) => [String(i + 1), s.hex])),
+        dark:  Object.fromEntries(tintedGray.dark.map((s, i)  => [String(i + 1), s.hex])),
+      },
     },
     null,
     2,
   )
 }
 
-type Props = { palette: PaletteResult }
+type Props = {
+  palette: PaletteResult
+  neutralGray: PaletteResult
+  tintedGray: PaletteResult
+}
 
-export function ExportPanel({ palette }: Props) {
+export function ExportPanel({ palette, neutralGray, tintedGray }: Props) {
   const [tab, setTab] = useState<Tab>('css')
   const [copied, setCopied] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current) }, [])
 
-  const content = tab === 'css' ? buildCss(palette) : buildJson(palette)
+  const content = tab === 'css'
+    ? buildCss(palette, neutralGray, tintedGray)
+    : buildJson(palette, neutralGray, tintedGray)
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(content).then(() => {
