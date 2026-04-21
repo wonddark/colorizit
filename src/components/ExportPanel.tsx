@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { PaletteResult } from '../lib/generatePalette'
+import type { PaletteResult, BackgroundResult } from '../lib/generatePalette'
 
 type Tab = 'css' | 'json'
 
@@ -7,6 +7,7 @@ export function buildCss(
   palette: PaletteResult,
   neutralGray: PaletteResult,
   tintedGray: PaletteResult,
+  background: BackgroundResult,
 ): string {
   const lines: string[] = [':root {', '  /* Primary — Light */']
   palette.light.forEach((step, i) => {
@@ -37,6 +38,10 @@ export function buildCss(
   tintedGray.dark.forEach((step, i) => {
     lines.push(`  --gray-tinted-dark-${i + 1}: ${step.oklch};`)
   })
+  lines.push('')
+  lines.push('  /* AA Background */')
+  lines.push(`  --bg-light: ${background.light.oklch};`)
+  lines.push(`  --bg-dark: ${background.dark.oklch};`)
   lines.push('}')
   return lines.join('\n')
 }
@@ -45,6 +50,7 @@ export function buildJson(
   palette: PaletteResult,
   neutralGray: PaletteResult,
   tintedGray: PaletteResult,
+  background: BackgroundResult,
 ): string {
   return JSON.stringify(
     {
@@ -58,6 +64,10 @@ export function buildJson(
         light: Object.fromEntries(tintedGray.light.map((s, i) => [String(i + 1), s.hex])),
         dark:  Object.fromEntries(tintedGray.dark.map((s, i)  => [String(i + 1), s.hex])),
       },
+      background: {
+        light: { hex: background.light.hex, contrastRatio: background.light.contrastRatio, source: background.light.source },
+        dark:  { hex: background.dark.hex,  contrastRatio: background.dark.contrastRatio,  source: background.dark.source  },
+      },
     },
     null,
     2,
@@ -68,9 +78,10 @@ type Props = {
   palette: PaletteResult
   neutralGray: PaletteResult
   tintedGray: PaletteResult
+  background: BackgroundResult
 }
 
-export function ExportPanel({ palette, neutralGray, tintedGray }: Props) {
+export function ExportPanel({ palette, neutralGray, tintedGray, background }: Props) {
   const [tab, setTab] = useState<Tab>('css')
   const [copied, setCopied] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -78,8 +89,8 @@ export function ExportPanel({ palette, neutralGray, tintedGray }: Props) {
   useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current) }, [])
 
   const content = tab === 'css'
-    ? buildCss(palette, neutralGray, tintedGray)
-    : buildJson(palette, neutralGray, tintedGray)
+    ? buildCss(palette, neutralGray, tintedGray, background)
+    : buildJson(palette, neutralGray, tintedGray, background)
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(content).then(() => {

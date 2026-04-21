@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react'
 import { ColorInput } from './components/ColorInput'
 import { ExportPanel } from './components/ExportPanel'
 import { PaletteScale } from './components/PaletteScale'
-import { generatePalette, generateGrayPalettes } from './lib/generatePalette'
+import { BackgroundSwatch } from './components/BackgroundSwatch'
+import { generatePalette, generateGrayPalettes, generateBackground } from './lib/generatePalette'
 
 const DEFAULT_COLOR = '#3D63DD'
 
@@ -18,6 +19,11 @@ export default function App() {
     try { return generateGrayPalettes(color) }
     catch { return generateGrayPalettes(DEFAULT_COLOR) }
   }, [color])
+
+  const background = useMemo(() => {
+    try { return generateBackground(palette, grays) }
+    catch { return generateBackground(generatePalette(DEFAULT_COLOR), generateGrayPalettes(DEFAULT_COLOR)) }
+  }, [palette, grays])
 
   return (
     <div className="min-h-screen bg-[#111] text-white p-8">
@@ -46,7 +52,23 @@ export default function App() {
           <PaletteScale steps={grays.tinted.dark} mode="dark" showLegend />
         </div>
 
-        <ExportPanel palette={palette} neutralGray={grays.neutral} tintedGray={grays.tinted} />
+        <div className="flex flex-col gap-2">
+          <h2 className="text-[11px] font-semibold uppercase tracking-widest text-white/30">
+            AA Background
+          </h2>
+          <BackgroundSwatch
+            result={background}
+            foregroundLight={palette.light[11]}
+            foregroundDark={palette.dark[11]}
+          />
+        </div>
+
+        <ExportPanel
+          palette={palette}
+          neutralGray={grays.neutral}
+          tintedGray={grays.tinted}
+          background={background}
+        />
       </div>
     </div>
   )
