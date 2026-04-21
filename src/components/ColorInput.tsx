@@ -21,6 +21,8 @@ export function ColorInput({ value, onChange }: Props) {
     setText(value)
   }, [value])
 
+  useEffect(() => () => clearTimeout(timerRef.current), [])
+
   const handlePickerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = e.target.value
     setDisplayColor(v)
@@ -30,6 +32,7 @@ export function ColorInput({ value, onChange }: Props) {
 
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = e.target.value
+    clearTimeout(timerRef.current)
     setText(v)
     const hex = tryParseToHex(v)
     if (hex) onChange(hex)
