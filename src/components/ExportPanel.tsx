@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { PaletteResult } from '../lib/generatePalette'
 
 type Tab = 'css' | 'json'
@@ -33,14 +33,18 @@ type Props = { palette: PaletteResult }
 export function ExportPanel({ palette }: Props) {
   const [tab, setTab] = useState<Tab>('css')
   const [copied, setCopied] = useState(false)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current) }, [])
 
   const content = tab === 'css' ? buildCss(palette) : buildJson(palette)
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(content).then(() => {
       setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    })
+      if (timerRef.current) clearTimeout(timerRef.current)
+      timerRef.current = setTimeout(() => setCopied(false), 1500)
+    }).catch(() => {})
   }, [content])
 
   return (
