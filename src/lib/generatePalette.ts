@@ -51,7 +51,7 @@ function buildStep(l: number, c: number, h: number): ColorStep {
   const clamped = clampChroma({ mode: 'oklch', l, c, h }, 'oklch', 'rgb')
   return {
     hex: formatHex(clamped) ?? '#000000',
-    oklch: formatOklchString(l, c, h),
+    oklch: formatOklchString(clamped.l, clamped.c ?? 0, clamped.h ?? h),
   }
 }
 
@@ -60,7 +60,14 @@ export function generatePalette(input: string): PaletteResult {
   if (!parsed) throw new Error(`Invalid color: ${input}`)
 
   const oklch = toOklch(parsed)
-  const h = oklch?.h ?? 0
+  const h = oklch?.h
+
+  if (h === undefined || isNaN(h)) {
+    return {
+      light: LIGHT_STEPS.map(({ l }) => buildStep(l, 0, 0)),
+      dark:  DARK_STEPS.map(({ l }) => buildStep(l, 0, 0)),
+    }
+  }
 
   return {
     light: LIGHT_STEPS.map(({ l, c }) => buildStep(l, c, h)),
