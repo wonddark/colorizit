@@ -189,8 +189,8 @@ export function ExportPanel({ palette, neutralGray, tintedGray, background, acce
             onClick={() => setTab(t)}
             className={`px-4 py-2 text-xs font-semibold rounded-t-lg border transition-colors ${
               tab === t
-                ? 'bg-white/5 border-white/10 text-white'
-                : 'bg-transparent border-transparent text-white/30 hover:text-white/50'
+                ? 'bg-[var(--app-surface)] border-[var(--app-border)] text-[var(--app-fg)]'
+                : 'bg-transparent border-transparent text-[var(--app-fg-muted)] hover:text-[var(--app-fg-subtle)]'
             }`}
           >
             {t === 'css' ? 'CSS Variables' : t === 'json' ? 'JSON' : 'shadcn/ui'}
@@ -198,14 +198,14 @@ export function ExportPanel({ palette, neutralGray, tintedGray, background, acce
         ))}
       </div>
 
-      <div className="relative bg-white/5 border border-white/10 rounded-b-xl rounded-tr-xl p-4">
+      <div className="relative bg-[var(--app-surface)] border border-[var(--app-border)] rounded-b-xl rounded-tr-xl p-4">
         <button
           onClick={handleCopy}
-          className="absolute top-3 right-3 px-3 py-1.5 text-[11px] font-semibold bg-white/10 hover:bg-white/15 border border-white/10 rounded-md text-white/60 hover:text-white transition-colors"
+          className="absolute top-3 right-3 px-3 py-1.5 text-[11px] font-semibold bg-[var(--app-surface-hover)] hover:bg-[var(--app-border)] border border-[var(--app-border)] rounded-md text-[var(--app-fg-muted)] hover:text-[var(--app-fg)] transition-colors"
         >
           {copied ? 'Copied!' : 'Copy'}
         </button>
-        <pre className="text-[11px] font-mono text-white/50 overflow-auto max-h-52 leading-relaxed whitespace-pre pr-16">
+        <pre className="text-[11px] font-mono text-[var(--app-fg-muted)] overflow-auto max-h-52 leading-relaxed whitespace-pre pr-16">
           {content}
         </pre>
       </div>
