@@ -137,6 +137,56 @@ export function generatePalette(input: string): PaletteResult {
   }
 }
 
+export type ColorSuggestion = {
+  label:   string
+  palette: PaletteResult
+}
+
+export type HarmonyResult = {
+  accent:    ColorSuggestion[]
+  secondary: ColorSuggestion[]
+}
+
+const ACCENT_SHIFTS: Array<{ shift: number; label: string }> = [
+  { shift: 180, label: 'Complementary' },
+  { shift: 150, label: 'Split A' },
+  { shift: 210, label: 'Split B' },
+  { shift: 120, label: 'Triadic' },
+  { shift:  90, label: 'Square' },
+]
+
+const SECONDARY_SHIFTS: Array<{ shift: number; label: string }> = [
+  { shift:  30, label: 'Analogous +30°' },
+  { shift: -30, label: 'Analogous −30°' },
+  { shift:  60, label: 'Analogous +60°' },
+  { shift: -60, label: 'Analogous −60°' },
+  { shift:  45, label: 'Analogous +45°' },
+]
+
+export function generateHarmonies(input: string): HarmonyResult {
+  const parsed = parse(input)
+  if (!parsed) throw new Error(`Invalid color: ${input}`)
+
+  const oklch = toOklch(parsed)
+  const h = oklch?.h
+
+  if (h === undefined || isNaN(h)) {
+    return { accent: [], secondary: [] }
+  }
+
+  const makeSuggestion = ({ shift, label }: { shift: number; label: string }): ColorSuggestion => {
+    const newH = ((h + shift) % 360 + 360) % 360
+    const clamped = clampChroma({ mode: 'oklch', l: 0.5, c: 0.1, h: newH }, 'oklch', 'rgb')
+    const seedHex = formatHex(clamped) ?? '#808080'
+    return { label, palette: generatePalette(seedHex) }
+  }
+
+  return {
+    accent:    ACCENT_SHIFTS.map(makeSuggestion),
+    secondary: SECONDARY_SHIFTS.map(makeSuggestion),
+  }
+}
+
 export type BackgroundSource = 'neutral' | 'tinted' | 'generated'
 
 export type BackgroundColor = ColorStep & {

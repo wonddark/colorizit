@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { wcagContrast, formatHex } from 'culori'
-import { generatePalette, generateGrayPalettes, generateBackground } from '../lib/generatePalette'
+import { generatePalette, generateGrayPalettes, generateBackground, generateHarmonies } from '../lib/generatePalette'
 import type { PaletteResult, ColorStep } from '../lib/generatePalette'
 
 describe('generatePalette', () => {
@@ -167,5 +167,42 @@ describe('generateBackground', () => {
     // Neither neutral (#f9f9f9) nor tinted can achieve 4.5:1 against #d4d4d4
     expect(r.light.source).toBe('generated')
     expect(r.light.hex).toMatch(/^#[0-9a-f]{6}$/i)
+  })
+})
+
+describe('generateHarmonies', () => {
+  it('returns 5 accent and 5 secondary suggestions for a chromatic input', () => {
+    const result = generateHarmonies('#3D63DD')
+    expect(result.accent).toHaveLength(5)
+    expect(result.secondary).toHaveLength(5)
+  })
+
+  it('each suggestion has a non-empty label', () => {
+    const result = generateHarmonies('#3D63DD')
+    for (const s of [...result.accent, ...result.secondary]) {
+      expect(s.label.length).toBeGreaterThan(0)
+    }
+  })
+
+  it('each suggestion palette has 12 light and 12 dark steps', () => {
+    const result = generateHarmonies('#3D63DD')
+    for (const s of [...result.accent, ...result.secondary]) {
+      expect(s.palette.light).toHaveLength(12)
+      expect(s.palette.dark).toHaveLength(12)
+    }
+  })
+
+  it('accent labels are distinct from secondary labels', () => {
+    const result = generateHarmonies('#3D63DD')
+    const accentLabels = new Set(result.accent.map(s => s.label))
+    for (const s of result.secondary) {
+      expect(accentLabels.has(s.label)).toBe(false)
+    }
+  })
+
+  it('returns empty arrays for an achromatic input', () => {
+    const result = generateHarmonies('#808080')
+    expect(result.accent).toHaveLength(0)
+    expect(result.secondary).toHaveLength(0)
   })
 })
