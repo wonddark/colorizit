@@ -5,6 +5,7 @@ import { HarmonySuggestions } from './components/HarmonySuggestions'
 import { PaletteScale } from './components/PaletteScale'
 import { BackgroundSwatch } from './components/BackgroundSwatch'
 import { PreviewPanel } from './components/PreviewPanel'
+import { buildAppVars } from './lib/buildAppVars'
 import {
   generatePalette,
   generateGrayPalettes,
@@ -16,6 +17,18 @@ const DEFAULT_COLOR = '#3D63DD'
 
 export default function App() {
   const [color, setColor] = useState(DEFAULT_COLOR)
+
+  const [theme, setTheme] = useState<'light' | 'dark'>(() =>
+    localStorage.getItem('colorizit-theme') === 'light' ? 'light' : 'dark'
+  )
+
+  const toggleTheme = () => {
+    setTheme(t => {
+      const next = t === 'dark' ? 'light' : 'dark'
+      localStorage.setItem('colorizit-theme', next)
+      return next
+    })
+  }
 
   const palette = useMemo(() => {
     try { return generatePalette(color) }
@@ -48,19 +61,27 @@ export default function App() {
   const accentPalette    = harmonies.accent[selectedAccentIdx]?.palette
   const secondaryPalette = harmonies.secondary[selectedSecondaryIdx]?.palette
 
+  const appVars = useMemo(
+    () => buildAppVars(theme, palette),
+    [theme, palette],
+  )
+
   return (
-    <div className="min-h-screen bg-[#111] text-white">
+    <div
+      className="min-h-screen bg-[var(--app-bg)] text-[var(--app-fg)]"
+      style={appVars as React.CSSProperties}
+    >
       <div className="max-w-2xl mx-auto flex flex-col gap-8 p-8">
         <div>
           <h1 className="text-base font-semibold mb-0.5">Color Palette Generator</h1>
-          <p className="text-sm text-white/30">Generate a 12-step Radix-style color scale</p>
+          <p className="text-sm text-[var(--app-fg-muted)]">Generate a 12-step Radix-style color scale</p>
         </div>
-        <ColorInput value={color} onChange={setColor} />
+        <ColorInput value={color} onChange={setColor} theme={theme} onToggleTheme={toggleTheme} />
         <PaletteScale steps={palette.light} mode="light" />
         <PaletteScale steps={palette.dark} mode="dark" showLegend />
 
         <div className="flex flex-col gap-2">
-          <h2 className="text-[11px] font-semibold uppercase tracking-widest text-white/30">
+          <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[var(--app-fg-muted)]">
             Neutral Gray
           </h2>
           <PaletteScale steps={grays.neutral.light} mode="light" />
@@ -68,7 +89,7 @@ export default function App() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <h2 className="text-[11px] font-semibold uppercase tracking-widest text-white/30">
+          <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[var(--app-fg-muted)]">
             Tinted Gray
           </h2>
           <PaletteScale steps={grays.tinted.light} mode="light" />
@@ -84,7 +105,7 @@ export default function App() {
         />
 
         <div className="flex flex-col gap-2">
-          <h2 className="text-[11px] font-semibold uppercase tracking-widest text-white/30">
+          <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[var(--app-fg-muted)]">
             AA Background
           </h2>
           <BackgroundSwatch
