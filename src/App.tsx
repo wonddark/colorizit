@@ -4,6 +4,7 @@ import { ExportPanel } from './components/ExportPanel'
 import { HarmonySuggestions } from './components/HarmonySuggestions'
 import { PaletteScale } from './components/PaletteScale'
 import { BackgroundSwatch } from './components/BackgroundSwatch'
+import { PreviewPanel } from './components/PreviewPanel'
 import {
   generatePalette,
   generateGrayPalettes,
@@ -48,8 +49,8 @@ export default function App() {
   const secondaryPalette = harmonies.secondary[selectedSecondaryIdx]?.palette
 
   return (
-    <div className="min-h-screen bg-[#111] text-white p-8">
-      <div className="max-w-2xl mx-auto flex flex-col gap-8">
+    <div className="min-h-screen bg-[#111] text-white">
+      <div className="max-w-2xl mx-auto flex flex-col gap-8 p-8">
         <div>
           <h1 className="text-base font-semibold mb-0.5">Color Palette Generator</h1>
           <p className="text-sm text-white/30">Generate a 12-step Radix-style color scale</p>
@@ -102,6 +103,15 @@ export default function App() {
           secondaryPalette={secondaryPalette}
         />
       </div>
+
+      <PreviewPanel
+        palette={palette}
+        neutralGray={grays.neutral}
+        tintedGray={grays.tinted}
+        background={background}
+        accentPalette={accentPalette}
+        secondaryPalette={secondaryPalette}
+      />
     </div>
   )
 }
