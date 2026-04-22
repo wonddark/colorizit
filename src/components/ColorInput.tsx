@@ -4,6 +4,25 @@ import { parse, formatHex } from 'culori'
 type Props = {
   value: string
   onChange: (hex: string) => void
+  theme: 'light' | 'dark'
+  onToggleTheme: () => void
+}
+
+function SunIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="8" cy="8" r="2.5" fill="currentColor"/>
+      <path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M11.2 4.8l-1.4 1.4M4.8 11.2l-1.4 1.4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+function MoonIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.5 9.5A5.5 5.5 0 016 2.5a5.5 5.5 0 100 11 5.5 5.5 0 006.5-4z" fill="currentColor"/>
+    </svg>
+  )
 }
 
 function tryParseToHex(input: string): string | null {
@@ -11,7 +30,7 @@ function tryParseToHex(input: string): string | null {
   return parsed ? (formatHex(parsed) ?? null) : null
 }
 
-export function ColorInput({ value, onChange }: Props) {
+export function ColorInput({ value, onChange, theme, onToggleTheme }: Props) {
   const [displayColor, setDisplayColor] = useState(value)
   const [text, setText] = useState(value)
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -53,7 +72,7 @@ export function ColorInput({ value, onChange }: Props) {
           className="sr-only"
         />
         <div
-          className="w-11 h-11 rounded-xl border border-white/10 shadow-md"
+          className="w-11 h-11 rounded-xl border border-[var(--app-border)] shadow-md"
           style={{ background: displayColor }}
         />
       </label>
@@ -63,9 +82,18 @@ export function ColorInput({ value, onChange }: Props) {
         onChange={handleTextChange}
         onBlur={handleTextBlur}
         spellCheck={false}
-        className="font-mono text-sm px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white w-32 focus:outline-none focus:border-white/30"
+        className="font-mono text-sm px-3 py-2 rounded-lg bg-[var(--app-surface)] border border-[var(--app-border)] text-[var(--app-fg)] w-32 focus:outline-none focus:border-[var(--app-border-strong)]"
       />
-      <span className="text-sm text-white/30">Pick a color to generate your palette</span>
+      <span className="text-sm text-[var(--app-fg-muted)] ml-auto">
+        Pick a color to generate your palette
+      </span>
+      <button
+        onClick={onToggleTheme}
+        title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        className="w-8 h-8 rounded-lg flex items-center justify-center bg-[var(--app-surface)] border border-[var(--app-border)] text-[var(--app-fg-muted)] hover:text-[var(--app-fg)] hover:bg-[var(--app-surface-hover)] transition-colors shrink-0"
+      >
+        {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+      </button>
     </div>
   )
 }
