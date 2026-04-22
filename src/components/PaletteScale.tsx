@@ -51,6 +51,7 @@ export function PaletteScale({ steps, mode, showLegend }: Props) {
                     {i + 1}
                   </span>
                 </div>
+                {/* tooltip: dark overlay intentional in both themes for contrast against any swatch color */}
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-[10px] rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                   <div className="text-white/50">{PURPOSES[i]}</div>
                   <div>{step.hex}</div>
