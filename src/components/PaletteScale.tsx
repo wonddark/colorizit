@@ -24,7 +24,7 @@ type Props = {
 export function PaletteScale({ steps, mode, showLegend }: Props) {
   return (
     <div>
-      <h2 className="text-[11px] font-semibold uppercase tracking-widest text-white/30 mb-2">
+      <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[var(--app-fg-muted)] mb-2">
         {mode === 'light' ? 'Light' : 'Dark'}
       </h2>
 
@@ -62,7 +62,7 @@ export function PaletteScale({ steps, mode, showLegend }: Props) {
       </div>
 
       {showLegend && (
-        <div className="flex mt-2 text-[10px] text-white/25 font-medium">
+        <div className="flex mt-2 text-[10px] text-[var(--app-fg-subtle)] font-medium">
           <span className="flex-[2]">Backgrounds</span>
           <span className="flex-[3]">UI elements</span>
           <span className="flex-[3]">Borders</span>

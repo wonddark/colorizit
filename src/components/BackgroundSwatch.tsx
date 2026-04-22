@@ -41,7 +41,7 @@ export function BackgroundSwatch({ result, foregroundLight, foregroundDark }: Pr
             <ContrastBadge ratio={result.light.contrastRatio} />
           </div>
         </div>
-        <p className="text-[10px] text-white/30 mt-1.5">{sourceLabel(result.light.source)}</p>
+        <p className="text-[10px] text-[var(--app-fg-muted)] mt-1.5">{sourceLabel(result.light.source)}</p>
       </div>
 
       <div className="flex-1">
@@ -59,7 +59,7 @@ export function BackgroundSwatch({ result, foregroundLight, foregroundDark }: Pr
             <ContrastBadge ratio={result.dark.contrastRatio} />
           </div>
         </div>
-        <p className="text-[10px] text-white/30 mt-1.5">{sourceLabel(result.dark.source)}</p>
+        <p className="text-[10px] text-[var(--app-fg-muted)] mt-1.5">{sourceLabel(result.dark.source)}</p>
       </div>
     </div>
   )

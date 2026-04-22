@@ -20,7 +20,7 @@ export function HarmonySuggestions({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <h2 className="text-[11px] font-semibold uppercase tracking-widest text-white/30">Accent</h2>
+        <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[var(--app-fg-muted)]">Accent</h2>
         <div className="flex gap-3">
           {harmonies.accent.map((s, i) => (
             <button
@@ -31,12 +31,12 @@ export function HarmonySuggestions({
               <div
                 className={`w-10 h-10 rounded-md transition-all ${
                   selectedAccent === i
-                    ? 'ring-2 ring-white ring-offset-2 ring-offset-[#111]'
+                    ? 'ring-2 ring-[var(--app-fg)] ring-offset-2 ring-offset-[var(--app-bg)]'
                     : 'opacity-60 hover:opacity-100'
                 }`}
                 style={{ backgroundColor: s.palette.light[8].hex }}
               />
-              <span className="text-[10px] text-white/40 group-hover:text-white/60 whitespace-nowrap">
+              <span className="text-[10px] text-[var(--app-fg-muted)] group-hover:text-[var(--app-fg-subtle)] whitespace-nowrap">
                 {s.label}
               </span>
             </button>
@@ -45,7 +45,7 @@ export function HarmonySuggestions({
       </div>
 
       <div className="flex flex-col gap-2">
-        <h2 className="text-[11px] font-semibold uppercase tracking-widest text-white/30">Secondary</h2>
+        <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[var(--app-fg-muted)]">Secondary</h2>
         <div className="flex gap-3">
           {harmonies.secondary.map((s, i) => (
             <button
@@ -56,12 +56,12 @@ export function HarmonySuggestions({
               <div
                 className={`w-10 h-10 rounded-md transition-all ${
                   selectedSecondary === i
-                    ? 'ring-2 ring-white ring-offset-2 ring-offset-[#111]'
+                    ? 'ring-2 ring-[var(--app-fg)] ring-offset-2 ring-offset-[var(--app-bg)]'
                     : 'opacity-60 hover:opacity-100'
                 }`}
                 style={{ backgroundColor: s.palette.light[8].hex }}
               />
-              <span className="text-[10px] text-white/40 group-hover:text-white/60 whitespace-nowrap">
+              <span className="text-[10px] text-[var(--app-fg-muted)] group-hover:text-[var(--app-fg-subtle)] whitespace-nowrap">
                 {s.label}
               </span>
             </button>
