@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { PaletteResult, BackgroundResult } from '../lib/generatePalette'
+import { wcagContrast } from 'culori'
+import type { PaletteResult, BackgroundResult, ColorStep } from '../lib/generatePalette'
 
 type Tab = 'css' | 'json'
 
@@ -72,6 +73,52 @@ export function buildJson(
     null,
     2,
   )
+}
+
+export function buildShadcn(
+  palette: PaletteResult,
+  neutralGray: PaletteResult,
+  tintedGray: PaletteResult,
+  background: BackgroundResult,
+): string {
+  const pick = (against: string, a: ColorStep, b: ColorStep): string =>
+    wcagContrast(against, a.hex) >= wcagContrast(against, b.hex) ? a.oklch : b.oklch
+
+  const vars = (
+    p: ColorStep[],
+    ng: ColorStep[],
+    tg: ColorStep[],
+    bg: ColorStep,
+  ): string[] => [
+    `    --background: ${bg.oklch};`,
+    `    --foreground: ${p[11].oklch};`,
+    `    --card: ${tg[1].oklch};`,
+    `    --card-foreground: ${p[11].oklch};`,
+    `    --popover: ${bg.oklch};`,
+    `    --popover-foreground: ${p[11].oklch};`,
+    `    --primary: ${p[8].oklch};`,
+    `    --primary-foreground: ${pick(p[8].hex, p[0], p[11])};`,
+    `    --secondary: ${tg[2].oklch};`,
+    `    --secondary-foreground: ${tg[10].oklch};`,
+    `    --muted: ${ng[2].oklch};`,
+    `    --muted-foreground: ${ng[10].oklch};`,
+    `    --accent: ${tg[2].oklch};`,
+    `    --accent-foreground: ${p[11].oklch};`,
+    `    --border: ${tg[5].oklch};`,
+    `    --input: ${tg[5].oklch};`,
+    `    --ring: ${p[7].oklch};`,
+  ]
+
+  return [
+    '@layer base {',
+    '  :root {',
+    ...vars(palette.light, neutralGray.light, tintedGray.light, background.light),
+    '  }',
+    '  .dark {',
+    ...vars(palette.dark, neutralGray.dark, tintedGray.dark, background.dark),
+    '  }',
+    '}',
+  ].join('\n')
 }
 
 type Props = {
