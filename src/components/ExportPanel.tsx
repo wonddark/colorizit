@@ -112,6 +112,8 @@ export function buildShadcn(
   neutralGray: PaletteResult,
   tintedGray: PaletteResult,
   background: BackgroundResult,
+  accentPalette?: PaletteResult,
+  secondaryPalette?: PaletteResult,
 ): string {
   const pick = (against: string, a: ColorStep, b: ColorStep): string =>
     wcagContrast(against, a.hex) >= wcagContrast(against, b.hex) ? a.oklch : b.oklch
@@ -121,6 +123,8 @@ export function buildShadcn(
     ng: ColorStep[],
     tg: ColorStep[],
     bg: ColorStep,
+    ap: ColorStep[] | undefined,
+    sp: ColorStep[] | undefined,
   ): string[] => [
     `    --background: ${bg.oklch};`,
     `    --foreground: ${p[11].oklch};`,
@@ -130,12 +134,12 @@ export function buildShadcn(
     `    --popover-foreground: ${p[11].oklch};`,
     `    --primary: ${p[8].oklch};`,
     `    --primary-foreground: ${pick(p[8].hex, p[0], p[11])};`,
-    `    --secondary: ${tg[2].oklch};`,
-    `    --secondary-foreground: ${tg[10].oklch};`,
+    `    --secondary: ${sp ? sp[2].oklch : tg[2].oklch};`,
+    `    --secondary-foreground: ${sp ? sp[10].oklch : tg[10].oklch};`,
     `    --muted: ${ng[2].oklch};`,
     `    --muted-foreground: ${ng[10].oklch};`,
-    `    --accent: ${tg[2].oklch};`,
-    `    --accent-foreground: ${p[11].oklch};`,
+    `    --accent: ${ap ? ap[2].oklch : tg[2].oklch};`,
+    `    --accent-foreground: ${ap ? ap[11].oklch : p[11].oklch};`,
     `    --border: ${tg[5].oklch};`,
     `    --input: ${tg[5].oklch};`,
     `    --ring: ${p[7].oklch};`,
@@ -144,10 +148,10 @@ export function buildShadcn(
   return [
     '@layer base {',
     '  :root {',
-    ...vars(palette.light, neutralGray.light, tintedGray.light, background.light),
+    ...vars(palette.light, neutralGray.light, tintedGray.light, background.light, accentPalette?.light, secondaryPalette?.light),
     '  }',
     '  .dark {',
-    ...vars(palette.dark, neutralGray.dark, tintedGray.dark, background.dark),
+    ...vars(palette.dark, neutralGray.dark, tintedGray.dark, background.dark, accentPalette?.dark, secondaryPalette?.dark),
     '  }',
     '}',
   ].join('\n')

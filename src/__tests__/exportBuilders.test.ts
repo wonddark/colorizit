@@ -191,3 +191,35 @@ describe('buildJson — with accent/secondary', () => {
     expect(json.secondary).toBeUndefined()
   })
 })
+
+describe('buildShadcn — with accent/secondary', () => {
+  it('uses secondary palette step 3 for --secondary when provided', () => {
+    const out = buildShadcn(palette, neutral, tinted, background, accentPalette, secondaryPalette)
+    expect(out).toContain(`--secondary: ${secondaryPalette.light[2].oklch}`)
+  })
+
+  it('uses secondary palette step 11 for --secondary-foreground when provided', () => {
+    const out = buildShadcn(palette, neutral, tinted, background, accentPalette, secondaryPalette)
+    expect(out).toContain(`--secondary-foreground: ${secondaryPalette.light[10].oklch}`)
+  })
+
+  it('uses accent palette step 3 for --accent when provided', () => {
+    const out = buildShadcn(palette, neutral, tinted, background, accentPalette, secondaryPalette)
+    expect(out).toContain(`--accent: ${accentPalette.light[2].oklch}`)
+  })
+
+  it('uses accent palette step 12 for --accent-foreground when provided', () => {
+    const out = buildShadcn(palette, neutral, tinted, background, accentPalette, secondaryPalette)
+    expect(out).toContain(`--accent-foreground: ${accentPalette.light[11].oklch}`)
+  })
+
+  it('falls back to tinted-gray for --secondary when no palette provided', () => {
+    const out = buildShadcn(palette, neutral, tinted, background)
+    expect(out).toContain(`--secondary: ${tinted.light[2].oklch}`)
+  })
+
+  it('falls back to tinted-gray for --accent when no palette provided', () => {
+    const out = buildShadcn(palette, neutral, tinted, background)
+    expect(out).toContain(`--accent: ${tinted.light[2].oklch}`)
+  })
+})
