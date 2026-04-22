@@ -162,9 +162,11 @@ type Props = {
   neutralGray: PaletteResult
   tintedGray: PaletteResult
   background: BackgroundResult
+  accentPalette?: PaletteResult
+  secondaryPalette?: PaletteResult
 }
 
-export function ExportPanel({ palette, neutralGray, tintedGray, background }: Props) {
+export function ExportPanel({ palette, neutralGray, tintedGray, background, accentPalette, secondaryPalette }: Props) {
   const [tab, setTab] = useState<Tab>('css')
   const [copied, setCopied] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -172,10 +174,10 @@ export function ExportPanel({ palette, neutralGray, tintedGray, background }: Pr
   useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current) }, [])
 
   const content = tab === 'css'
-    ? buildCss(palette, neutralGray, tintedGray, background)
+    ? buildCss(palette, neutralGray, tintedGray, background, accentPalette, secondaryPalette)
     : tab === 'json'
-    ? buildJson(palette, neutralGray, tintedGray, background)
-    : buildShadcn(palette, neutralGray, tintedGray, background)
+    ? buildJson(palette, neutralGray, tintedGray, background, accentPalette, secondaryPalette)
+    : buildShadcn(palette, neutralGray, tintedGray, background, accentPalette, secondaryPalette)
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(content).then(() => {

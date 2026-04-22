@@ -1,9 +1,15 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ColorInput } from './components/ColorInput'
 import { ExportPanel } from './components/ExportPanel'
+import { HarmonySuggestions } from './components/HarmonySuggestions'
 import { PaletteScale } from './components/PaletteScale'
 import { BackgroundSwatch } from './components/BackgroundSwatch'
-import { generatePalette, generateGrayPalettes, generateBackground } from './lib/generatePalette'
+import {
+  generatePalette,
+  generateGrayPalettes,
+  generateBackground,
+  generateHarmonies,
+} from './lib/generatePalette'
 
 const DEFAULT_COLOR = '#3D63DD'
 
@@ -24,6 +30,22 @@ export default function App() {
     try { return generateBackground(palette, grays) }
     catch { return generateBackground(generatePalette(DEFAULT_COLOR), generateGrayPalettes(DEFAULT_COLOR)) }
   }, [palette, grays])
+
+  const harmonies = useMemo(() => {
+    try { return generateHarmonies(color) }
+    catch { return generateHarmonies(DEFAULT_COLOR) }
+  }, [color])
+
+  const [selectedAccentIdx, setSelectedAccentIdx] = useState(0)
+  const [selectedSecondaryIdx, setSelectedSecondaryIdx] = useState(0)
+
+  useEffect(() => {
+    setSelectedAccentIdx(0)
+    setSelectedSecondaryIdx(0)
+  }, [color])
+
+  const accentPalette    = harmonies.accent[selectedAccentIdx]?.palette
+  const secondaryPalette = harmonies.secondary[selectedSecondaryIdx]?.palette
 
   return (
     <div className="min-h-screen bg-[#111] text-white p-8">
@@ -52,6 +74,14 @@ export default function App() {
           <PaletteScale steps={grays.tinted.dark} mode="dark" showLegend />
         </div>
 
+        <HarmonySuggestions
+          harmonies={harmonies}
+          selectedAccent={selectedAccentIdx}
+          selectedSecondary={selectedSecondaryIdx}
+          onSelectAccent={setSelectedAccentIdx}
+          onSelectSecondary={setSelectedSecondaryIdx}
+        />
+
         <div className="flex flex-col gap-2">
           <h2 className="text-[11px] font-semibold uppercase tracking-widest text-white/30">
             AA Background
@@ -68,6 +98,8 @@ export default function App() {
           neutralGray={grays.neutral}
           tintedGray={grays.tinted}
           background={background}
+          accentPalette={accentPalette}
+          secondaryPalette={secondaryPalette}
         />
       </div>
     </div>
