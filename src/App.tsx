@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ColorInput } from './components/ColorInput'
 import { ExportPanel } from './components/ExportPanel'
 import { HarmonySuggestions } from './components/HarmonySuggestions'
@@ -22,13 +22,13 @@ export default function App() {
     localStorage.getItem('colorizit-theme') === 'light' ? 'light' : 'dark'
   )
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     setTheme(t => {
       const next = t === 'dark' ? 'light' : 'dark'
       localStorage.setItem('colorizit-theme', next)
       return next
     })
-  }
+  }, [])
 
   const palette = useMemo(() => {
     try { return generatePalette(color) }
