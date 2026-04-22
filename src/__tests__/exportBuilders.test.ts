@@ -171,3 +171,23 @@ describe('buildCss — with accent/secondary', () => {
     expect(css).not.toContain('--secondary-1:')
   })
 })
+
+describe('buildJson — with accent/secondary', () => {
+  it('includes accent.light and accent.dark with 12 entries when palette provided', () => {
+    const json = JSON.parse(buildJson(palette, neutral, tinted, background, accentPalette))
+    expect(Object.keys(json.accent.light)).toHaveLength(12)
+    expect(Object.keys(json.accent.dark)).toHaveLength(12)
+  })
+
+  it('includes secondary.light and secondary.dark with 12 entries when palette provided', () => {
+    const json = JSON.parse(buildJson(palette, neutral, tinted, background, undefined, secondaryPalette))
+    expect(Object.keys(json.secondary.light)).toHaveLength(12)
+    expect(Object.keys(json.secondary.dark)).toHaveLength(12)
+  })
+
+  it('omits accent/secondary keys when no palettes provided', () => {
+    const json = JSON.parse(buildJson(palette, neutral, tinted, background))
+    expect(json.accent).toBeUndefined()
+    expect(json.secondary).toBeUndefined()
+  })
+})

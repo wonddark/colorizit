@@ -70,6 +70,8 @@ export function buildJson(
   neutralGray: PaletteResult,
   tintedGray: PaletteResult,
   background: BackgroundResult,
+  accentPalette?: PaletteResult,
+  secondaryPalette?: PaletteResult,
 ): string {
   return JSON.stringify(
     {
@@ -87,6 +89,18 @@ export function buildJson(
         light: { hex: background.light.hex, contrastRatio: background.light.contrastRatio, source: background.light.source },
         dark:  { hex: background.dark.hex,  contrastRatio: background.dark.contrastRatio,  source: background.dark.source  },
       },
+      ...(accentPalette && {
+        accent: {
+          light: Object.fromEntries(accentPalette.light.map((s, i) => [String(i + 1), s.hex])),
+          dark:  Object.fromEntries(accentPalette.dark.map((s, i)  => [String(i + 1), s.hex])),
+        },
+      }),
+      ...(secondaryPalette && {
+        secondary: {
+          light: Object.fromEntries(secondaryPalette.light.map((s, i) => [String(i + 1), s.hex])),
+          dark:  Object.fromEntries(secondaryPalette.dark.map((s, i)  => [String(i + 1), s.hex])),
+        },
+      }),
     },
     null,
     2,
