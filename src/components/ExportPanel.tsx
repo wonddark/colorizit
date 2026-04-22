@@ -9,6 +9,8 @@ export function buildCss(
   neutralGray: PaletteResult,
   tintedGray: PaletteResult,
   background: BackgroundResult,
+  accentPalette?: PaletteResult,
+  secondaryPalette?: PaletteResult,
 ): string {
   const lines: string[] = [':root {', '  /* Primary — Light */']
   palette.light.forEach((step, i) => {
@@ -43,6 +45,22 @@ export function buildCss(
   lines.push('  /* AA Background */')
   lines.push(`  --bg-light: ${background.light.oklch};`)
   lines.push(`  --bg-dark: ${background.dark.oklch};`)
+  if (accentPalette) {
+    lines.push('')
+    lines.push('  /* Accent — Light */')
+    accentPalette.light.forEach((step, i) => lines.push(`  --accent-${i + 1}: ${step.oklch};`))
+    lines.push('')
+    lines.push('  /* Accent — Dark */')
+    accentPalette.dark.forEach((step, i) => lines.push(`  --accent-dark-${i + 1}: ${step.oklch};`))
+  }
+  if (secondaryPalette) {
+    lines.push('')
+    lines.push('  /* Secondary — Light */')
+    secondaryPalette.light.forEach((step, i) => lines.push(`  --secondary-${i + 1}: ${step.oklch};`))
+    lines.push('')
+    lines.push('  /* Secondary — Dark */')
+    secondaryPalette.dark.forEach((step, i) => lines.push(`  --secondary-dark-${i + 1}: ${step.oklch};`))
+  }
   lines.push('}')
   return lines.join('\n')
 }

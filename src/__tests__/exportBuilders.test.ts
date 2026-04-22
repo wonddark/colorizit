@@ -1,10 +1,13 @@
 import { describe, it, expect } from 'vitest'
 import { buildCss, buildJson, buildShadcn } from '../components/ExportPanel'
-import { generatePalette, generateGrayPalettes, generateBackground } from '../lib/generatePalette'
+import { generatePalette, generateGrayPalettes, generateBackground, generateHarmonies } from '../lib/generatePalette'
 
 const palette    = generatePalette('#3D63DD')
 const { neutral, tinted } = generateGrayPalettes('#3D63DD')
 const background = generateBackground(palette, { neutral, tinted })
+const harmonies        = generateHarmonies('#3D63DD')
+const accentPalette    = harmonies.accent[0].palette
+const secondaryPalette = harmonies.secondary[0].palette
 
 describe('buildCss', () => {
   it('includes primary light vars', () => {
@@ -134,5 +137,37 @@ describe('buildShadcn', () => {
   it('--primary-foreground is an oklch value', () => {
     const out = buildShadcn(palette, neutral, tinted, background)
     expect(out).toMatch(/--primary-foreground:\s+oklch\(/)
+  })
+})
+
+describe('buildCss — with accent/secondary', () => {
+  it('includes accent light vars when accentPalette provided', () => {
+    const css = buildCss(palette, neutral, tinted, background, accentPalette)
+    expect(css).toContain('--accent-1:')
+    expect(css).toContain('--accent-12:')
+  })
+
+  it('includes accent dark vars when accentPalette provided', () => {
+    const css = buildCss(palette, neutral, tinted, background, accentPalette)
+    expect(css).toContain('--accent-dark-1:')
+    expect(css).toContain('--accent-dark-12:')
+  })
+
+  it('includes secondary light vars when secondaryPalette provided', () => {
+    const css = buildCss(palette, neutral, tinted, background, undefined, secondaryPalette)
+    expect(css).toContain('--secondary-1:')
+    expect(css).toContain('--secondary-12:')
+  })
+
+  it('includes secondary dark vars when secondaryPalette provided', () => {
+    const css = buildCss(palette, neutral, tinted, background, undefined, secondaryPalette)
+    expect(css).toContain('--secondary-dark-1:')
+    expect(css).toContain('--secondary-dark-12:')
+  })
+
+  it('omits accent/secondary sections when no palettes provided', () => {
+    const css = buildCss(palette, neutral, tinted, background)
+    expect(css).not.toContain('--accent-1:')
+    expect(css).not.toContain('--secondary-1:')
   })
 })
