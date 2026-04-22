@@ -1,6 +1,6 @@
 import type { PaletteResult } from './generatePalette'
 
-export type AppVars = Record<string, string>
+export type AppVars = Readonly<Record<string, string>>
 
 const DARK_VARS: AppVars = {
   '--app-bg':            '#111111',
