@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { wcagContrast } from 'culori'
 import type { PaletteResult, BackgroundResult, ColorStep } from '../lib/generatePalette'
 
-type Tab = 'css' | 'json'
+type Tab = 'css' | 'json' | 'shadcn'
 
 export function buildCss(
   palette: PaletteResult,
@@ -137,7 +137,9 @@ export function ExportPanel({ palette, neutralGray, tintedGray, background }: Pr
 
   const content = tab === 'css'
     ? buildCss(palette, neutralGray, tintedGray, background)
-    : buildJson(palette, neutralGray, tintedGray, background)
+    : tab === 'json'
+    ? buildJson(palette, neutralGray, tintedGray, background)
+    : buildShadcn(palette, neutralGray, tintedGray, background)
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(content).then(() => {
@@ -150,7 +152,7 @@ export function ExportPanel({ palette, neutralGray, tintedGray, background }: Pr
   return (
     <div>
       <div className="flex gap-0.5 mb-0">
-        {(['css', 'json'] as Tab[]).map((t) => (
+        {(['css', 'json', 'shadcn'] as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -160,7 +162,7 @@ export function ExportPanel({ palette, neutralGray, tintedGray, background }: Pr
                 : 'bg-transparent border-transparent text-white/30 hover:text-white/50'
             }`}
           >
-            {t === 'css' ? 'CSS Variables' : 'JSON'}
+            {t === 'css' ? 'CSS Variables' : t === 'json' ? 'JSON' : 'shadcn/ui'}
           </button>
         ))}
       </div>
