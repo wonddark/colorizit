@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { buildCss, buildJson, buildShadcn } from '../components/ExportPanel'
 import { generatePalette, generateGrayPalettes, generateBackground, generateHarmonies } from '../lib/generatePalette'
+import { buildTokens } from '../lib/buildTokens'
 
 const palette    = generatePalette('#3D63DD')
 const { neutral, tinted } = generateGrayPalettes('#3D63DD')
@@ -8,6 +9,78 @@ const background = generateBackground(palette, { neutral, tinted })
 const harmonies        = generateHarmonies('#3D63DD')
 const accentPalette    = harmonies.accent[0].palette
 const secondaryPalette = harmonies.secondary[0].palette
+
+describe('buildTokens', () => {
+  const tokens = buildTokens(palette, neutral, tinted, background)
+
+  it('returns light and dark token sets', () => {
+    expect(tokens.light).toBeDefined()
+    expect(tokens.dark).toBeDefined()
+  })
+
+  it('light token set has all 14 required keys', () => {
+    const required = [
+      'background', 'foreground', 'card', 'card-foreground',
+      'primary', 'primary-foreground',
+      'secondary', 'secondary-foreground',
+      'muted', 'muted-foreground',
+      'accent', 'accent-foreground',
+      'border', 'ring',
+    ]
+    for (const key of required) {
+      expect(tokens.light).toHaveProperty(key)
+    }
+  })
+
+  it('dark token set has all 14 required keys', () => {
+    const required = [
+      'background', 'foreground', 'card', 'card-foreground',
+      'primary', 'primary-foreground',
+      'secondary', 'secondary-foreground',
+      'muted', 'muted-foreground',
+      'accent', 'accent-foreground',
+      'border', 'ring',
+    ]
+    for (const key of required) {
+      expect(tokens.dark).toHaveProperty(key)
+    }
+  })
+
+  it('all token values are oklch strings', () => {
+    for (const val of Object.values(tokens.light)) {
+      expect(val).toMatch(/^oklch\(/)
+    }
+    for (const val of Object.values(tokens.dark)) {
+      expect(val).toMatch(/^oklch\(/)
+    }
+  })
+
+  it('light and dark primary values differ', () => {
+    expect(tokens.light.primary).not.toBe(tokens.dark.primary)
+  })
+
+  it('uses accent palette step 3 for accent when provided', () => {
+    const t = buildTokens(palette, neutral, tinted, background, accentPalette)
+    expect(t.light.accent).toBe(accentPalette.light[2].oklch)
+    expect(t.dark.accent).toBe(accentPalette.dark[2].oklch)
+  })
+
+  it('falls back to tintedGray step 3 for accent when no accentPalette', () => {
+    const t = buildTokens(palette, neutral, tinted, background)
+    expect(t.light.accent).toBe(tinted.light[2].oklch)
+  })
+
+  it('uses secondary palette step 3 for secondary when provided', () => {
+    const t = buildTokens(palette, neutral, tinted, background, undefined, secondaryPalette)
+    expect(t.light.secondary).toBe(secondaryPalette.light[2].oklch)
+    expect(t.dark.secondary).toBe(secondaryPalette.dark[2].oklch)
+  })
+
+  it('falls back to tintedGray step 3 for secondary when no secondaryPalette', () => {
+    const t = buildTokens(palette, neutral, tinted, background)
+    expect(t.light.secondary).toBe(tinted.light[2].oklch)
+  })
+})
 
 describe('buildCss', () => {
   it('includes primary light vars', () => {
