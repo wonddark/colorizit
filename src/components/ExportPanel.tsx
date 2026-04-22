@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { wcagContrast } from 'culori'
-import type { PaletteResult, BackgroundResult, ColorStep } from '../lib/generatePalette'
+import { buildTokens, type TokenSet } from '../lib/buildTokens'
+import type { PaletteResult, BackgroundResult } from '../lib/generatePalette'
 
 type Tab = 'css' | 'json' | 'shadcn'
 
@@ -107,6 +107,28 @@ export function buildJson(
   )
 }
 
+function shadcnVars(tokens: TokenSet): string[] {
+  return [
+    `    --background: ${tokens.background};`,
+    `    --foreground: ${tokens.foreground};`,
+    `    --card: ${tokens.card};`,
+    `    --card-foreground: ${tokens['card-foreground']};`,
+    `    --popover: ${tokens.background};`,
+    `    --popover-foreground: ${tokens.foreground};`,
+    `    --primary: ${tokens.primary};`,
+    `    --primary-foreground: ${tokens['primary-foreground']};`,
+    `    --secondary: ${tokens.secondary};`,
+    `    --secondary-foreground: ${tokens['secondary-foreground']};`,
+    `    --muted: ${tokens.muted};`,
+    `    --muted-foreground: ${tokens['muted-foreground']};`,
+    `    --accent: ${tokens.accent};`,
+    `    --accent-foreground: ${tokens['accent-foreground']};`,
+    `    --border: ${tokens.border};`,
+    `    --input: ${tokens.border};`,
+    `    --ring: ${tokens.ring};`,
+  ]
+}
+
 export function buildShadcn(
   palette: PaletteResult,
   neutralGray: PaletteResult,
@@ -115,43 +137,14 @@ export function buildShadcn(
   accentPalette?: PaletteResult,
   secondaryPalette?: PaletteResult,
 ): string {
-  const pick = (against: string, a: ColorStep, b: ColorStep): string =>
-    wcagContrast(against, a.hex) >= wcagContrast(against, b.hex) ? a.oklch : b.oklch
-
-  const vars = (
-    p: ColorStep[],
-    ng: ColorStep[],
-    tg: ColorStep[],
-    bg: ColorStep,
-    ap: ColorStep[] | undefined,
-    sp: ColorStep[] | undefined,
-  ): string[] => [
-    `    --background: ${bg.oklch};`,
-    `    --foreground: ${p[11].oklch};`,
-    `    --card: ${tg[1].oklch};`,
-    `    --card-foreground: ${p[11].oklch};`,
-    `    --popover: ${bg.oklch};`,
-    `    --popover-foreground: ${p[11].oklch};`,
-    `    --primary: ${p[8].oklch};`,
-    `    --primary-foreground: ${pick(p[8].hex, p[0], p[11])};`,
-    `    --secondary: ${sp ? sp[2].oklch : tg[2].oklch};`,
-    `    --secondary-foreground: ${sp ? sp[10].oklch : tg[10].oklch};`,
-    `    --muted: ${ng[2].oklch};`,
-    `    --muted-foreground: ${ng[10].oklch};`,
-    `    --accent: ${ap ? ap[2].oklch : tg[2].oklch};`,
-    `    --accent-foreground: ${ap ? ap[11].oklch : p[11].oklch};`,
-    `    --border: ${tg[5].oklch};`,
-    `    --input: ${tg[5].oklch};`,
-    `    --ring: ${p[7].oklch};`,
-  ]
-
+  const tokens = buildTokens(palette, neutralGray, tintedGray, background, accentPalette, secondaryPalette)
   return [
     '@layer base {',
     '  :root {',
-    ...vars(palette.light, neutralGray.light, tintedGray.light, background.light, accentPalette?.light, secondaryPalette?.light),
+    ...shadcnVars(tokens.light),
     '  }',
     '  .dark {',
-    ...vars(palette.dark, neutralGray.dark, tintedGray.dark, background.dark, accentPalette?.dark, secondaryPalette?.dark),
+    ...shadcnVars(tokens.dark),
     '  }',
     '}',
   ].join('\n')
