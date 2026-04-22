@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildCss, buildJson } from '../components/ExportPanel'
+import { buildCss, buildJson, buildShadcn } from '../components/ExportPanel'
 import { generatePalette, generateGrayPalettes, generateBackground } from '../lib/generatePalette'
 
 const palette    = generatePalette('#3D63DD')
@@ -88,5 +88,51 @@ describe('buildJson', () => {
     expect(typeof json.background.dark.contrastRatio).toBe('number')
     expect(['neutral', 'tinted', 'generated']).toContain(json.background.dark.source)
     expect(json.background.dark.oklch).toBeUndefined()
+  })
+})
+
+describe('buildShadcn', () => {
+  const coreTokens = [
+    '--background', '--foreground',
+    '--card', '--card-foreground',
+    '--popover', '--popover-foreground',
+    '--primary', '--primary-foreground',
+    '--secondary', '--secondary-foreground',
+    '--muted', '--muted-foreground',
+    '--accent', '--accent-foreground',
+    '--border', '--input', '--ring',
+  ]
+
+  it('wraps output in @layer base', () => {
+    const out = buildShadcn(palette, neutral, tinted, background)
+    expect(out.trimStart().startsWith('@layer base {')).toBe(true)
+    expect(out.trimEnd().endsWith('}')).toBe(true)
+  })
+
+  it('contains :root and .dark blocks', () => {
+    const out = buildShadcn(palette, neutral, tinted, background)
+    expect(out).toContain(':root {')
+    expect(out).toContain('.dark {')
+  })
+
+  it('includes all 17 core tokens in :root', () => {
+    const out = buildShadcn(palette, neutral, tinted, background)
+    const root = out.slice(out.indexOf(':root {'), out.indexOf('.dark {'))
+    for (const token of coreTokens) {
+      expect(root).toContain(token + ':')
+    }
+  })
+
+  it('includes all 17 core tokens in .dark', () => {
+    const out = buildShadcn(palette, neutral, tinted, background)
+    const dark = out.slice(out.indexOf('.dark {'))
+    for (const token of coreTokens) {
+      expect(dark).toContain(token + ':')
+    }
+  })
+
+  it('--primary-foreground is an oklch value', () => {
+    const out = buildShadcn(palette, neutral, tinted, background)
+    expect(out).toMatch(/--primary-foreground:\s+oklch\(/)
   })
 })
