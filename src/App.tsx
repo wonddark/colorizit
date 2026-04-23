@@ -77,23 +77,26 @@ export default function App() {
           <p className="text-sm text-[var(--app-fg-muted)]">Generate a 12-step Radix-style color scale</p>
         </div>
         <ColorInput value={color} onChange={setColor} theme={theme} onToggleTheme={toggleTheme} />
-        <PaletteScale steps={palette.light} mode="light" />
-        <PaletteScale steps={palette.dark} mode="dark" showLegend />
+        {theme === 'light'
+          ? <PaletteScale steps={palette.light} mode="light" showLegend />
+          : <PaletteScale steps={palette.dark} mode="dark" showLegend />}
 
         <div className="flex flex-col gap-2">
           <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[var(--app-fg-muted)]">
             Neutral Gray
           </h2>
-          <PaletteScale steps={grays.neutral.light} mode="light" />
-          <PaletteScale steps={grays.neutral.dark} mode="dark" />
+          {theme === 'light'
+            ? <PaletteScale steps={grays.neutral.light} mode="light" />
+            : <PaletteScale steps={grays.neutral.dark} mode="dark" />}
         </div>
 
         <div className="flex flex-col gap-2">
           <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[var(--app-fg-muted)]">
             Tinted Gray
           </h2>
-          <PaletteScale steps={grays.tinted.light} mode="light" />
-          <PaletteScale steps={grays.tinted.dark} mode="dark" showLegend />
+          {theme === 'light'
+            ? <PaletteScale steps={grays.tinted.light} mode="light" showLegend />
+            : <PaletteScale steps={grays.tinted.dark} mode="dark" showLegend />}
         </div>
 
         <HarmonySuggestions
@@ -102,6 +105,7 @@ export default function App() {
           selectedSecondary={selectedSecondaryIdx}
           onSelectAccent={setSelectedAccentIdx}
           onSelectSecondary={setSelectedSecondaryIdx}
+          theme={theme}
         />
 
         <div className="flex flex-col gap-2">
@@ -112,6 +116,7 @@ export default function App() {
             result={background}
             foregroundLight={palette.light[11]}
             foregroundDark={palette.dark[11]}
+            theme={theme}
           />
         </div>
 
@@ -132,6 +137,7 @@ export default function App() {
         background={background}
         accentPalette={accentPalette}
         secondaryPalette={secondaryPalette}
+        theme={theme}
       />
     </div>
   )
