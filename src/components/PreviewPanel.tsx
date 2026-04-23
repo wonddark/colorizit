@@ -6,7 +6,6 @@ type Props = {
   tintedGray: PaletteResult
   background: BackgroundResult
   accentPalette?: PaletteResult
-  secondaryPalette?: PaletteResult
   theme: 'light' | 'dark'
 }
 

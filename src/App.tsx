@@ -167,7 +167,6 @@ export default function App() {
             tintedGray={previewGray}
             background={background}
             accentPalette={accentPalette}
-            secondaryPalette={secondaryPalette}
             theme={theme}
           />
         </div>
