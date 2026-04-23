@@ -4,6 +4,7 @@ type Props = {
   result: BackgroundResult
   foregroundLight: ColorStep
   foregroundDark: ColorStep
+  theme: 'light' | 'dark'
 }
 
 function ContrastBadge({ ratio }: { ratio: number }) {
@@ -23,44 +24,27 @@ function sourceLabel(source: BackgroundSource): string {
   }
 }
 
-export function BackgroundSwatch({ result, foregroundLight, foregroundDark }: Props) {
-  return (
-    <div className="flex gap-3">
-      <div className="flex-1">
-        <div
-          className="rounded-xl p-4 flex flex-col items-center justify-center gap-1.5 h-24"
-          style={{ background: result.light.hex }}
-        >
-          <span
-            className="text-3xl font-bold leading-none"
-            style={{ color: foregroundLight.hex }}
-          >
-            Aa
-          </span>
-          <div style={{ color: foregroundLight.hex }}>
-            <ContrastBadge ratio={result.light.contrastRatio} />
-          </div>
-        </div>
-        <p className="text-[10px] text-[var(--app-fg-muted)] mt-1.5">{sourceLabel(result.light.source)}</p>
-      </div>
+export function BackgroundSwatch({ result, foregroundLight, foregroundDark, theme }: Props) {
+  const swatch = theme === 'light' ? result.light : result.dark
+  const fg     = theme === 'light' ? foregroundLight : foregroundDark
 
-      <div className="flex-1">
-        <div
-          className="rounded-xl p-4 flex flex-col items-center justify-center gap-1.5 h-24"
-          style={{ background: result.dark.hex }}
+  return (
+    <div>
+      <div
+        className="rounded-xl p-4 flex flex-col items-center justify-center gap-1.5 h-24"
+        style={{ background: swatch.hex }}
+      >
+        <span
+          className="text-3xl font-bold leading-none"
+          style={{ color: fg.hex }}
         >
-          <span
-            className="text-3xl font-bold leading-none"
-            style={{ color: foregroundDark.hex }}
-          >
-            Aa
-          </span>
-          <div style={{ color: foregroundDark.hex }}>
-            <ContrastBadge ratio={result.dark.contrastRatio} />
-          </div>
+          Aa
+        </span>
+        <div style={{ color: fg.hex }}>
+          <ContrastBadge ratio={swatch.contrastRatio} />
         </div>
-        <p className="text-[10px] text-[var(--app-fg-muted)] mt-1.5">{sourceLabel(result.dark.source)}</p>
       </div>
+      <p className="text-[10px] text-[var(--app-fg-muted)] mt-1.5">{sourceLabel(swatch.source)}</p>
     </div>
   )
 }
