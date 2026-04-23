@@ -91,15 +91,15 @@ export default function App() {
 
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
-              <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[var(--app-fg-muted)]">
+              <h2 className="text-[11px] font-semibold uppercase tracking-widest text-(--app-fg-muted)">
                 Neutral Gray
               </h2>
               <button
                 onClick={() => setPreferredGray('neutral')}
                 className={`px-3 py-1.5 text-[11px] font-semibold rounded-md border transition-colors ${
                   preferredGray === 'neutral'
-                    ? 'bg-[var(--app-surface)] border-[var(--app-border)] text-[var(--app-fg)]'
-                    : 'bg-transparent border-transparent text-[var(--app-fg-muted)] hover:text-[var(--app-fg-subtle)]'
+                    ? 'bg-(--app-surface) border-(--app-border) text-(--app-fg)'
+                    : 'bg-transparent border-transparent text-(--app-fg-muted) hover:text-(--app-fg-subtle)'
                 }`}
               >
                 Use in Preview
@@ -112,15 +112,15 @@ export default function App() {
 
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
-              <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[var(--app-fg-muted)]">
+              <h2 className="text-[11px] font-semibold uppercase tracking-widest text-(--app-fg-muted)">
                 Tinted Gray
               </h2>
               <button
                 onClick={() => setPreferredGray('tinted')}
                 className={`px-3 py-1.5 text-[11px] font-semibold rounded-md border transition-colors ${
                   preferredGray === 'tinted'
-                    ? 'bg-[var(--app-surface)] border-[var(--app-border)] text-[var(--app-fg)]'
-                    : 'bg-transparent border-transparent text-[var(--app-fg-muted)] hover:text-[var(--app-fg-subtle)]'
+                    ? 'bg-(--app-surface) border-(--app-border) text-(--app-fg)'
+                    : 'bg-transparent border-transparent text-(--app-fg-muted) hover:text-(--app-fg-subtle)'
                 }`}
               >
                 Use in Preview
@@ -141,7 +141,7 @@ export default function App() {
           />
 
           <div className="flex flex-col gap-2">
-            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[var(--app-fg-muted)]">
+            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-(--app-fg-muted)">
               AA Background
             </h2>
             <BackgroundSwatch
