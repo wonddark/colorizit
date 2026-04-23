@@ -63,10 +63,16 @@ export default function App() {
     [theme, palette],
   )
 
+  const appBgGradient = useMemo(() => {
+    const steps = theme === 'light' ? previewGray.light : previewGray.dark
+    const tint = steps[2].oklch
+    return `radial-gradient(ellipse 100% 700px at 50% -200px, color-mix(in oklch, ${tint} 40%, transparent), transparent)`
+  }, [previewGray, theme])
+
   return (
     <div
       className="min-h-screen bg-(--app-bg) text-(--app-fg)"
-      style={appVars as React.CSSProperties}
+      style={{ ...(appVars as React.CSSProperties), backgroundImage: appBgGradient }}
     >
       <div className="px-8 pt-8">
         <h1 className="text-base font-semibold mb-0.5">Color Palette Generator</h1>
