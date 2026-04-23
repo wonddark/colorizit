@@ -1,4 +1,4 @@
-import type { ColorStep } from '../lib/generatePalette'
+import type {ColorStep} from '../lib/generatePalette'
 
 const PURPOSES = [
   'App background',
@@ -21,10 +21,11 @@ type Props = {
   showLegend?: boolean
 }
 
-export function PaletteScale({ steps, mode, showLegend }: Props) {
+export function PaletteScale(props: Readonly<Props>) {
+    const { steps, mode, showLegend } = props
   return (
     <div>
-      <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[var(--app-fg-muted)] mb-2">
+      <h2 className="text-[11px] font-semibold uppercase tracking-widest text-(--app-fg-muted) mb-2">
         {mode === 'light' ? 'Light' : 'Dark'}
       </h2>
 
@@ -63,12 +64,12 @@ export function PaletteScale({ steps, mode, showLegend }: Props) {
       </div>
 
       {showLegend && (
-        <div className="flex mt-2 text-[10px] text-[var(--app-fg-subtle)] font-medium">
-          <span className="flex-[2]">Backgrounds</span>
-          <span className="flex-[3]">UI elements</span>
-          <span className="flex-[3]">Borders</span>
-          <span className="flex-[2]">Solid</span>
-          <span className="flex-[2] text-right">Text</span>
+        <div className="flex mt-2 text-[10px] text-(--app-fg-subtle) font-medium">
+          <span className="flex-2">Backgrounds</span>
+          <span className="flex-3">UI elements</span>
+          <span className="flex-3">Borders</span>
+          <span className="flex-2">Solid</span>
+          <span className="flex-2 text-right">Text</span>
         </div>
       )}
     </div>

@@ -1,5 +1,5 @@
-import { DashboardPreview } from './DashboardPreview'
-import type { PaletteResult, BackgroundResult } from '../lib/generatePalette'
+import {DashboardPreview} from './DashboardPreview'
+import type {BackgroundResult, PaletteResult} from '../lib/generatePalette'
 
 type Props = {
   palette: PaletteResult
@@ -9,7 +9,8 @@ type Props = {
   theme: 'light' | 'dark'
 }
 
-export function PreviewPanel({ palette, tintedGray, background, accentPalette, theme }: Props) {
+export function PreviewPanel(props: Readonly<Props>) {
+  const { palette, tintedGray, background, accentPalette, theme } = props
   return (
     <section>
       <div style={{ borderRadius: '16px', border: '1px solid var(--app-border)', overflow: 'hidden' }}>

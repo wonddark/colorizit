@@ -189,8 +189,8 @@ export function ExportPanel({ palette, neutralGray, tintedGray, background, acce
             onClick={() => setTab(t)}
             className={`px-4 py-2 text-xs font-semibold rounded-t-lg border transition-colors ${
               tab === t
-                ? 'bg-[var(--app-surface)] border-[var(--app-border)] text-[var(--app-fg)]'
-                : 'bg-transparent border-transparent text-[var(--app-fg-muted)] hover:text-[var(--app-fg-subtle)]'
+                ? 'bg-(--app-surface) border-(--app-border) text-(--app-fg)'
+                : 'bg-transparent border-transparent text-(--app-fg-muted) hover:text-(--app-fg-subtle)'
             }`}
           >
             {t === 'css' ? 'CSS Variables' : t === 'json' ? 'JSON' : 'shadcn/ui'}
@@ -198,14 +198,14 @@ export function ExportPanel({ palette, neutralGray, tintedGray, background, acce
         ))}
       </div>
 
-      <div className="relative bg-[var(--app-surface)] border border-[var(--app-border)] rounded-b-xl rounded-tr-xl p-4">
+      <div className="relative bg-(--app-surface) border border-(--app-border) rounded-b-xl rounded-tr-xl p-4">
         <button
           onClick={handleCopy}
-          className="absolute top-3 right-3 px-3 py-1.5 text-[11px] font-semibold bg-[var(--app-surface-hover)] hover:bg-[var(--app-border)] border border-[var(--app-border)] rounded-md text-[var(--app-fg-muted)] hover:text-[var(--app-fg)] transition-colors"
+          className="absolute top-3 right-3 px-3 py-1.5 text-[11px] font-semibold bg-(--app-surface-hover) hover:bg-(--app-border) border border-(--app-border) rounded-md text-(--app-fg-muted) hover:text-(--app-fg) transition-colors"
         >
           {copied ? 'Copied!' : 'Copy'}
         </button>
-        <pre className="text-[11px] font-mono text-[var(--app-fg-muted)] overflow-auto max-h-52 leading-relaxed whitespace-pre pr-16">
+        <pre className="text-[11px] font-mono text-(--app-fg-muted) overflow-auto max-h-52 leading-relaxed whitespace-pre pr-16">
           {content}
         </pre>
       </div>

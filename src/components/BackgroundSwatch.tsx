@@ -1,4 +1,4 @@
-import type { BackgroundResult, BackgroundSource, ColorStep } from '../lib/generatePalette'
+import type {BackgroundResult, BackgroundSource, ColorStep} from '../lib/generatePalette'
 
 type Props = {
   result: BackgroundResult
@@ -7,7 +7,7 @@ type Props = {
   theme: 'light' | 'dark'
 }
 
-function ContrastBadge({ ratio }: { ratio: number }) {
+function ContrastBadge({ ratio }: Readonly<{ ratio: number }>) {
   const level = ratio >= 7 ? 'AAA' : 'AA'
   return (
     <span className="text-[11px] font-bold">
@@ -24,7 +24,8 @@ function sourceLabel(source: BackgroundSource): string {
   }
 }
 
-export function BackgroundSwatch({ result, foregroundLight, foregroundDark, theme }: Props) {
+export function BackgroundSwatch(props: Readonly<Props>) {
+  const { result, foregroundLight, foregroundDark, theme } = props
   const swatch = theme === 'light' ? result.light : result.dark
   const fg     = theme === 'light' ? foregroundLight : foregroundDark
 
@@ -44,7 +45,7 @@ export function BackgroundSwatch({ result, foregroundLight, foregroundDark, them
           <ContrastBadge ratio={swatch.contrastRatio} />
         </div>
       </div>
-      <p className="text-[10px] text-[var(--app-fg-muted)] mt-1.5">{sourceLabel(swatch.source)}</p>
+      <p className="text-[10px] text-(--app-fg-muted) mt-1.5">{sourceLabel(swatch.source)}</p>
     </div>
   )
 }

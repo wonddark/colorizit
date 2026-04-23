@@ -1,5 +1,5 @@
-import type { CSSProperties } from 'react'
-import type { PaletteResult, BackgroundResult } from '../lib/generatePalette'
+import type {CSSProperties} from 'react'
+import type {BackgroundResult, PaletteResult} from '../lib/generatePalette'
 
 type Props = {
   palette: PaletteResult
@@ -11,7 +11,8 @@ type Props = {
 
 const ID = 'dashboard-preview'
 
-export function DashboardPreview({ palette, gray, background, theme }: Props) {
+export function DashboardPreview(props: Readonly<Props>) {
+  const { palette, gray, background, theme } = props;
   const p = theme === 'light' ? palette.light : palette.dark
   const g = theme === 'light' ? gray.light : gray.dark
   const bg = theme === 'light' ? background.light : background.dark

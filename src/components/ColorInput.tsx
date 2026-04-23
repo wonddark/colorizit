@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { parse, formatHex } from 'culori'
+import {useEffect, useRef, useState} from 'react'
+import {formatHex, parse} from 'culori'
 
 type Props = {
   value: string
@@ -30,7 +30,8 @@ function tryParseToHex(input: string): string | null {
   return parsed ? (formatHex(parsed) ?? null) : null
 }
 
-export function ColorInput({ value, onChange, theme, onToggleTheme }: Props) {
+export function ColorInput(props: Readonly<Props>) {
+    const { value, onChange, theme, onToggleTheme } = props;
   const [displayColor, setDisplayColor] = useState(value)
   const [text, setText] = useState(value)
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -72,7 +73,7 @@ export function ColorInput({ value, onChange, theme, onToggleTheme }: Props) {
           className="sr-only"
         />
         <div
-          className="w-11 h-11 rounded-xl border border-[var(--app-border)] shadow-md"
+          className="w-11 h-11 rounded-xl border border-(--app-border) shadow-md"
           style={{ background: displayColor }}
         />
       </label>
@@ -82,15 +83,15 @@ export function ColorInput({ value, onChange, theme, onToggleTheme }: Props) {
         onChange={handleTextChange}
         onBlur={handleTextBlur}
         spellCheck={false}
-        className="font-mono text-sm px-3 py-2 rounded-lg bg-[var(--app-surface)] border border-[var(--app-border)] text-[var(--app-fg)] w-32 focus:outline-none focus:border-[var(--app-border-strong)]"
+        className="font-mono text-sm px-3 py-2 rounded-lg bg-(--app-surface) border border-(--app-border) text-(--app-fg) w-32 focus:outline-none focus:border-(--app-border-strong)"
       />
-      <span className="text-sm text-[var(--app-fg-muted)] ml-auto">
+      <span className="text-sm text-(--app-fg-muted) ml-auto">
         Pick a color to generate your palette
       </span>
       <button
         onClick={onToggleTheme}
         title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-        className="w-8 h-8 rounded-lg flex items-center justify-center bg-[var(--app-surface)] border border-[var(--app-border)] text-[var(--app-fg-muted)] hover:text-[var(--app-fg)] hover:bg-[var(--app-surface-hover)] transition-colors shrink-0"
+        className="w-8 h-8 rounded-lg flex items-center justify-center bg-(--app-surface) border border-(--app-border) text-(--app-fg-muted) hover:text-(--app-fg) hover:bg-(--app-surface-hover) transition-colors shrink-0"
       >
         {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
       </button>
