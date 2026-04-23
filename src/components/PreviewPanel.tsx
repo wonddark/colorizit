@@ -3,7 +3,6 @@ import type { PaletteResult, BackgroundResult } from '../lib/generatePalette'
 
 type Props = {
   palette: PaletteResult
-  neutralGray: PaletteResult
   tintedGray: PaletteResult
   background: BackgroundResult
   accentPalette?: PaletteResult
