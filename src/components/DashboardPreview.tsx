@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import type { PaletteResult, BackgroundResult } from '../lib/generatePalette'
 
 type Props = {
@@ -18,7 +19,6 @@ export function DashboardPreview({ palette, gray, background, theme }: Props) {
   const vars = {
     '--p3':  p[2].oklch,
     '--p9':  p[8].oklch,
-    '--p10': p[9].oklch,
     '--p11': p[10].oklch,
     '--g1':  g[0].oklch,
     '--g2':  g[1].oklch,
@@ -26,7 +26,7 @@ export function DashboardPreview({ palette, gray, background, theme }: Props) {
     '--g11': g[10].oklch,
     '--g12': g[11].oklch,
     '--bg':  bg.oklch,
-  } as React.CSSProperties
+  } as CSSProperties
 
   return (
     <div
