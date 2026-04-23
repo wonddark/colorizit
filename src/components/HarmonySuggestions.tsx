@@ -6,6 +6,7 @@ type Props = {
   selectedSecondary: number
   onSelectAccent:    (i: number) => void
   onSelectSecondary: (i: number) => void
+  theme:             'light' | 'dark'
 }
 
 export function HarmonySuggestions({
@@ -14,6 +15,7 @@ export function HarmonySuggestions({
   selectedSecondary,
   onSelectAccent,
   onSelectSecondary,
+  theme,
 }: Props) {
   if (harmonies.accent.length === 0) return null
 
@@ -34,7 +36,7 @@ export function HarmonySuggestions({
                     ? 'ring-2 ring-[var(--app-fg)] ring-offset-2 ring-offset-[var(--app-bg)]'
                     : 'opacity-60 hover:opacity-100'
                 }`}
-                style={{ backgroundColor: s.palette.light[8].hex }}
+                style={{ backgroundColor: s.palette[theme][8].hex }}
               />
               <span className="text-[10px] text-[var(--app-fg-muted)] group-hover:text-[var(--app-fg-subtle)] whitespace-nowrap">
                 {s.label}
@@ -59,7 +61,7 @@ export function HarmonySuggestions({
                     ? 'ring-2 ring-[var(--app-fg)] ring-offset-2 ring-offset-[var(--app-bg)]'
                     : 'opacity-60 hover:opacity-100'
                 }`}
-                style={{ backgroundColor: s.palette.light[8].hex }}
+                style={{ backgroundColor: s.palette[theme][8].hex }}
               />
               <span className="text-[10px] text-[var(--app-fg-muted)] group-hover:text-[var(--app-fg-subtle)] whitespace-nowrap">
                 {s.label}
