@@ -1,17 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ColorInput } from './components/ColorInput'
-import { ExportPanel } from './components/ExportPanel'
-import { HarmonySuggestions } from './components/HarmonySuggestions'
-import { PaletteScale } from './components/PaletteScale'
-import { BackgroundSwatch } from './components/BackgroundSwatch'
-import { PreviewPanel } from './components/PreviewPanel'
-import { buildAppVars } from './lib/buildAppVars'
-import {
-  generatePalette,
-  generateGrayPalettes,
-  generateBackground,
-  generateHarmonies,
-} from './lib/generatePalette'
+import {useCallback, useEffect, useMemo, useState} from 'react'
+import {ColorInput} from './components/ColorInput'
+import {ExportPanel} from './components/ExportPanel'
+import {HarmonySuggestions} from './components/HarmonySuggestions'
+import {PaletteScale} from './components/PaletteScale'
+import {BackgroundSwatch} from './components/BackgroundSwatch'
+import {PreviewPanel} from './components/PreviewPanel'
+import {buildAppVars} from './lib/buildAppVars'
+import {generateBackground, generateGrayPalettes, generateHarmonies, generatePalette,} from './lib/generatePalette'
 
 const DEFAULT_COLOR = '#3D63DD'
 
@@ -70,19 +65,19 @@ export default function App() {
 
   return (
     <div
-      className="min-h-screen bg-[var(--app-bg)] text-[var(--app-fg)]"
+      className="min-h-screen bg-(--app-bg) text-(--app-fg)"
       style={appVars as React.CSSProperties}
     >
       <div className="px-8 pt-8">
         <h1 className="text-base font-semibold mb-0.5">Color Palette Generator</h1>
-        <p className="text-sm text-[var(--app-fg-muted)]">Generate a 12-step Radix-style color scale</p>
+        <p className="text-sm text-(--app-fg-muted)">Generate a 12-step Radix-style color scale</p>
       </div>
 
       <div className="px-8 pt-6 flex justify-center">
         <ColorInput value={color} onChange={setColor} theme={theme} onToggleTheme={toggleTheme} />
       </div>
 
-      <div className="p-8 pt-6 flex flex-col lg:flex-row gap-8 items-start">
+      <div className="p-8 pt-6 grid lg:grid-cols-[40%_1fr] gap-8 items-start">
         <div className="flex flex-col gap-8 flex-1 min-w-0">
           {theme === 'light'
             ? <PaletteScale steps={palette.light} mode="light" showLegend />
@@ -161,7 +156,7 @@ export default function App() {
           />
         </div>
 
-        <div className="w-full lg:w-[440px] shrink-0">
+        <div className="w-full shrink-0">
           <PreviewPanel
             palette={palette}
             tintedGray={previewGray}
