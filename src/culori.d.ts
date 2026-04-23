@@ -6,4 +6,5 @@ declare module 'culori' {
   export function converter(mode: 'oklch'): (color: Color) => OklchColor | undefined
   export function formatHex(color: Color | undefined): string | undefined
   export function clampChroma(color: OklchColor, mode?: string, gamut?: string): OklchColor
+  export function wcagContrast(a: Color | string, b: Color | string): number
 }
