@@ -10,9 +10,10 @@ type Props = {
   background: BackgroundResult
   accentPalette?: PaletteResult
   secondaryPalette?: PaletteResult
+  theme: 'light' | 'dark'
 }
 
-export function PreviewPanel({ palette, neutralGray, tintedGray, background, accentPalette, secondaryPalette }: Props) {
+export function PreviewPanel({ palette, neutralGray, tintedGray, background, accentPalette, secondaryPalette, theme }: Props) {
   const tokens = useMemo(
     () => buildTokens(palette, neutralGray, tintedGray, background, accentPalette, secondaryPalette),
     [palette, neutralGray, tintedGray, background, accentPalette, secondaryPalette],
@@ -24,10 +25,11 @@ export function PreviewPanel({ palette, neutralGray, tintedGray, background, acc
         <div style={{ padding: '12px 20px', borderBottom: '1px solid var(--app-border)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--app-fg-muted)', background: 'var(--app-surface)' }}>
           Live Preview
         </div>
-        <ComponentKit id="preview-light" tokens={tokens.light} label="Light" />
-        <div style={{ borderTop: '1px solid var(--app-border)' }}>
-          <ComponentKit id="preview-dark" tokens={tokens.dark} label="Dark" />
-        </div>
+        <ComponentKit
+          id={`preview-${theme}`}
+          tokens={tokens[theme]}
+          label={theme === 'light' ? 'Light' : 'Dark'}
+        />
       </div>
     </section>
   )
