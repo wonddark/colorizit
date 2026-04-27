@@ -5,12 +5,12 @@ type Props = {
   palette: PaletteResult
   tintedGray: PaletteResult
   background: BackgroundResult
-  accentPalette?: PaletteResult
+  complementarPalette?: PaletteResult
   theme: 'light' | 'dark'
 }
 
 export function PreviewPanel(props: Readonly<Props>) {
-  const { palette, tintedGray, background, accentPalette, theme } = props
+  const { palette, tintedGray, background, complementarPalette, theme } = props
   return (
     <section>
       <div style={{ borderRadius: '16px', border: '1px solid var(--app-border)', overflow: 'hidden' }}>
@@ -21,7 +21,7 @@ export function PreviewPanel(props: Readonly<Props>) {
           palette={palette}
           gray={tintedGray}
           background={background}
-          accentPalette={accentPalette}
+          complementarPalette={complementarPalette}
           theme={theme}
         />
       </div>

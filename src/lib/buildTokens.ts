@@ -29,8 +29,7 @@ function deriveSet(
   ng: ColorStep[],
   tg: ColorStep[],
   bg: ColorStep,
-  ap: ColorStep[] | undefined,
-  sp: ColorStep[] | undefined,
+  cp: ColorStep[] | undefined,
 ): TokenSet {
   return {
     background: bg.oklch,
@@ -39,12 +38,12 @@ function deriveSet(
     'card-foreground': p[11].oklch,
     primary: p[9].oklch,
     'primary-foreground': pickForeground(p[9].hex, p[0], p[11]),
-    secondary: sp ? sp[2].oklch : tg[2].oklch,
-    'secondary-foreground': sp ? sp[10].oklch : tg[10].oklch,
+    secondary: tg[2].oklch,
+    'secondary-foreground': tg[10].oklch,
     muted: ng[2].oklch,
     'muted-foreground': ng[10].oklch,
-    accent: ap ? ap[2].oklch : tg[2].oklch,
-    'accent-foreground': ap ? ap[11].oklch : p[11].oklch,
+    accent: cp ? cp[2].oklch : tg[2].oklch,
+    'accent-foreground': cp ? cp[11].oklch : p[11].oklch,
     border: tg[5].oklch,
     ring: p[7].oklch,
   }
@@ -55,17 +54,16 @@ export function buildTokens(
   neutralGray: PaletteResult,
   tintedGray: PaletteResult,
   background: BackgroundResult,
-  accentPalette?: PaletteResult,
-  secondaryPalette?: PaletteResult,
+  complementarPalette?: PaletteResult,
 ): TokenResult {
   return {
     light: deriveSet(
       palette.light, neutralGray.light, tintedGray.light,
-      background.light, accentPalette?.light, secondaryPalette?.light,
+      background.light, complementarPalette?.light,
     ),
     dark: deriveSet(
       palette.dark, neutralGray.dark, tintedGray.dark,
-      background.dark, accentPalette?.dark, secondaryPalette?.dark,
+      background.dark, complementarPalette?.dark,
     ),
   }
 }

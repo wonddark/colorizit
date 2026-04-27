@@ -9,8 +9,7 @@ export function buildCss(
   neutralGray: PaletteResult,
   tintedGray: PaletteResult,
   background: BackgroundResult,
-  accentPalette?: PaletteResult,
-  secondaryPalette?: PaletteResult,
+  complementarPalette?: PaletteResult,
 ): string {
   const lines: string[] = [':root {', '  /* Primary — Light */']
   palette.light.forEach((step, i) => {
@@ -45,21 +44,13 @@ export function buildCss(
   lines.push('  /* AA Background */')
   lines.push(`  --bg-light: ${background.light.oklch};`)
   lines.push(`  --bg-dark: ${background.dark.oklch};`)
-  if (accentPalette) {
+  if (complementarPalette) {
     lines.push('')
-    lines.push('  /* Accent — Light */')
-    accentPalette.light.forEach((step, i) => lines.push(`  --accent-${i + 1}: ${step.oklch};`))
+    lines.push('  /* Complementar — Light */')
+    complementarPalette.light.forEach((step, i) => lines.push(`  --complementar-${i + 1}: ${step.oklch};`))
     lines.push('')
-    lines.push('  /* Accent — Dark */')
-    accentPalette.dark.forEach((step, i) => lines.push(`  --accent-dark-${i + 1}: ${step.oklch};`))
-  }
-  if (secondaryPalette) {
-    lines.push('')
-    lines.push('  /* Secondary — Light */')
-    secondaryPalette.light.forEach((step, i) => lines.push(`  --secondary-${i + 1}: ${step.oklch};`))
-    lines.push('')
-    lines.push('  /* Secondary — Dark */')
-    secondaryPalette.dark.forEach((step, i) => lines.push(`  --secondary-dark-${i + 1}: ${step.oklch};`))
+    lines.push('  /* Complementar — Dark */')
+    complementarPalette.dark.forEach((step, i) => lines.push(`  --complementar-dark-${i + 1}: ${step.oklch};`))
   }
   lines.push('}')
   return lines.join('\n')
@@ -70,8 +61,7 @@ export function buildJson(
   neutralGray: PaletteResult,
   tintedGray: PaletteResult,
   background: BackgroundResult,
-  accentPalette?: PaletteResult,
-  secondaryPalette?: PaletteResult,
+  complementarPalette?: PaletteResult,
 ): string {
   return JSON.stringify(
     {
@@ -89,16 +79,10 @@ export function buildJson(
         light: { hex: background.light.hex, contrastRatio: background.light.contrastRatio, source: background.light.source },
         dark:  { hex: background.dark.hex,  contrastRatio: background.dark.contrastRatio,  source: background.dark.source  },
       },
-      ...(accentPalette && {
-        accent: {
-          light: Object.fromEntries(accentPalette.light.map((s, i) => [String(i + 1), s.hex])),
-          dark:  Object.fromEntries(accentPalette.dark.map((s, i)  => [String(i + 1), s.hex])),
-        },
-      }),
-      ...(secondaryPalette && {
-        secondary: {
-          light: Object.fromEntries(secondaryPalette.light.map((s, i) => [String(i + 1), s.hex])),
-          dark:  Object.fromEntries(secondaryPalette.dark.map((s, i)  => [String(i + 1), s.hex])),
+      ...(complementarPalette && {
+        complementar: {
+          light: Object.fromEntries(complementarPalette.light.map((s, i) => [String(i + 1), s.hex])),
+          dark:  Object.fromEntries(complementarPalette.dark.map((s, i)  => [String(i + 1), s.hex])),
         },
       }),
     },
@@ -134,10 +118,9 @@ export function buildShadcn(
   neutralGray: PaletteResult,
   tintedGray: PaletteResult,
   background: BackgroundResult,
-  accentPalette?: PaletteResult,
-  secondaryPalette?: PaletteResult,
+  complementarPalette?: PaletteResult,
 ): string {
-  const tokens = buildTokens(palette, neutralGray, tintedGray, background, accentPalette, secondaryPalette)
+  const tokens = buildTokens(palette, neutralGray, tintedGray, background, complementarPalette)
   return [
     '@layer base {',
     '  :root {',
@@ -155,11 +138,10 @@ type Props = {
   neutralGray: PaletteResult
   tintedGray: PaletteResult
   background: BackgroundResult
-  accentPalette?: PaletteResult
-  secondaryPalette?: PaletteResult
+  complementarPalette?: PaletteResult
 }
 
-export function ExportPanel({ palette, neutralGray, tintedGray, background, accentPalette, secondaryPalette }: Props) {
+export function ExportPanel({ palette, neutralGray, tintedGray, background, complementarPalette }: Props) {
   const [tab, setTab] = useState<Tab>('css')
   const [copied, setCopied] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -167,10 +149,10 @@ export function ExportPanel({ palette, neutralGray, tintedGray, background, acce
   useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current) }, [])
 
   const content = tab === 'css'
-    ? buildCss(palette, neutralGray, tintedGray, background, accentPalette, secondaryPalette)
+    ? buildCss(palette, neutralGray, tintedGray, background, complementarPalette)
     : tab === 'json'
-    ? buildJson(palette, neutralGray, tintedGray, background, accentPalette, secondaryPalette)
-    : buildShadcn(palette, neutralGray, tintedGray, background, accentPalette, secondaryPalette)
+    ? buildJson(palette, neutralGray, tintedGray, background, complementarPalette)
+    : buildShadcn(palette, neutralGray, tintedGray, background, complementarPalette)
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(content).then(() => {

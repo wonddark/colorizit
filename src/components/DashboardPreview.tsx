@@ -5,7 +5,7 @@ type Props = {
   palette: PaletteResult
   gray: PaletteResult
   background: BackgroundResult
-  accentPalette?: PaletteResult  // reserved, unused in v1
+  complementarPalette?: PaletteResult
   theme: 'light' | 'dark'
 }
 

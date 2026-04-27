@@ -143,25 +143,8 @@ export type ColorSuggestion = {
 }
 
 export type HarmonyResult = {
-  accent:    ColorSuggestion[]
-  secondary: ColorSuggestion[]
+  complementar: ColorSuggestion | null
 }
-
-const ACCENT_SHIFTS: Array<{ shift: number; label: string }> = [
-  { shift: 180, label: 'Complementary' },
-  { shift: 150, label: 'Split A' },
-  { shift: 210, label: 'Split B' },
-  { shift: 120, label: 'Triadic' },
-  { shift:  90, label: 'Square' },
-]
-
-const SECONDARY_SHIFTS: Array<{ shift: number; label: string }> = [
-  { shift:  30, label: 'Analogous +30°' },
-  { shift: -30, label: 'Analogous −30°' },
-  { shift:  60, label: 'Analogous +60°' },
-  { shift: -60, label: 'Analogous −60°' },
-  { shift:  45, label: 'Analogous +45°' },
-]
 
 export function generateHarmonies(input: string): HarmonyResult {
   const parsed = parse(input)
@@ -171,19 +154,14 @@ export function generateHarmonies(input: string): HarmonyResult {
   const h = oklch?.h
 
   if (h === undefined || isNaN(h)) {
-    return { accent: [], secondary: [] }
+    return { complementar: null }
   }
 
-  const makeSuggestion = ({ shift, label }: { shift: number; label: string }): ColorSuggestion => {
-    const newH = ((h + shift) % 360 + 360) % 360
-    const clamped = clampChroma({ mode: 'oklch', l: 0.5, c: 0.1, h: newH }, 'oklch', 'rgb')
-    const seedHex = formatHex(clamped) ?? '#808080'
-    return { label, palette: generatePalette(seedHex) }
-  }
-
+  const newH = ((h + 180) % 360 + 360) % 360
+  const clamped = clampChroma({ mode: 'oklch', l: 0.5, c: 0.1, h: newH }, 'oklch', 'rgb')
+  const seedHex = formatHex(clamped) ?? '#808080'
   return {
-    accent:    ACCENT_SHIFTS.map(makeSuggestion),
-    secondary: SECONDARY_SHIFTS.map(makeSuggestion),
+    complementar: { label: 'Complementary', palette: generatePalette(seedHex) },
   }
 }
 

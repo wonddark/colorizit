@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useState} from 'react'
+import {useCallback, useMemo, useState} from 'react'
 import {ColorInput} from './components/ColorInput'
 import {ExportPanel} from './components/ExportPanel'
 import {HarmonySuggestions} from './components/HarmonySuggestions'
@@ -45,18 +45,10 @@ export default function App() {
     catch { return generateHarmonies(DEFAULT_COLOR) }
   }, [color])
 
-  const [selectedAccentIdx, setSelectedAccentIdx] = useState(0)
-  const [selectedSecondaryIdx, setSelectedSecondaryIdx] = useState(0)
   const [preferredGray, setPreferredGray] = useState<'neutral' | 'tinted'>('tinted')
 
-  useEffect(() => {
-    setSelectedAccentIdx(0)
-    setSelectedSecondaryIdx(0)
-  }, [color])
-
-  const accentPalette    = harmonies.accent[selectedAccentIdx]?.palette
-  const secondaryPalette = harmonies.secondary[selectedSecondaryIdx]?.palette
-  const previewGray      = preferredGray === 'neutral' ? grays.neutral : grays.tinted
+  const complementarPalette = harmonies.complementar?.palette
+  const previewGray         = preferredGray === 'neutral' ? grays.neutral : grays.tinted
 
   const appVars = useMemo(
     () => buildAppVars(theme, palette),
@@ -133,10 +125,6 @@ export default function App() {
 
           <HarmonySuggestions
             harmonies={harmonies}
-            selectedAccent={selectedAccentIdx}
-            selectedSecondary={selectedSecondaryIdx}
-            onSelectAccent={setSelectedAccentIdx}
-            onSelectSecondary={setSelectedSecondaryIdx}
             theme={theme}
           />
 
@@ -157,8 +145,7 @@ export default function App() {
             neutralGray={grays.neutral}
             tintedGray={grays.tinted}
             background={background}
-            accentPalette={accentPalette}
-            secondaryPalette={secondaryPalette}
+            complementarPalette={complementarPalette}
           />
         </div>
 
@@ -167,7 +154,7 @@ export default function App() {
             palette={palette}
             tintedGray={previewGray}
             background={background}
-            accentPalette={accentPalette}
+            complementarPalette={complementarPalette}
             theme={theme}
           />
         </div>
