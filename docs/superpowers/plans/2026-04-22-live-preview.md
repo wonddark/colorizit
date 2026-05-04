@@ -393,9 +393,9 @@ export function ComponentKit({ id, tokens, label }: Props) {
         {label}
       </div>
 
-      {/* Buttons */}
+      {/* Button */}
       <div style={{ marginBottom: '24px' }}>
-        <div style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--preview-muted-fg)', marginBottom: '10px' }}>Buttons</div>
+        <div style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--preview-muted-fg)', marginBottom: '10px' }}>Button</div>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
           <button className="pk-btn" style={{ padding: '8px 16px', borderRadius: '8px', fontSize: '13px', fontWeight: 500, border: 'none', cursor: 'pointer', background: 'var(--preview-primary)', color: 'var(--preview-primary-fg)', transition: 'filter 0.15s' }}>Primary</button>
           <button className="pk-btn" style={{ padding: '8px 16px', borderRadius: '8px', fontSize: '13px', fontWeight: 500, border: 'none', cursor: 'pointer', background: 'var(--preview-secondary)', color: 'var(--preview-secondary-fg)', transition: 'filter 0.15s' }}>Secondary</button>
@@ -703,7 +703,7 @@ cd /home/oz/Projects/Personal/colorizit && npm run dev
 Open the app in a browser and check:
 - The live preview panel appears below the export panel, full-width
 - Light pane is on top, dark pane below, each with a "LIGHT" / "DARK" label
-- All five rows appear in both panes: Buttons, Tabs, Inputs, Card, Typography
+- All five rows appear in both panes: Button, Tabs, Inputs, Card, Typography
 - Changing the color input updates all components in both panes in real time
 - Clicking a harmony suggestion (accent/secondary) also updates the preview
 - Clicking tabs in the preview switches the active tab locally

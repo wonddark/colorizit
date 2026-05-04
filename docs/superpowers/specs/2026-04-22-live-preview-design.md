@@ -151,7 +151,7 @@ A local `useState<number>` tracks the active tab index. Clicking any tab updates
 
 | Row | Elements | Interactive states |
 |-----|----------|--------------------|
-| **Buttons** | Primary, Secondary, Outline, Ghost, Disabled | Hover (`brightness(0.88)`), Disabled (`opacity: 0.4`, `pointer-events: none`) |
+| **Button** | Primary, Secondary, Outline, Ghost, Disabled | Hover (`brightness(0.88)`), Disabled (`opacity: 0.4`, `pointer-events: none`) |
 | **Tabs** | 3 tabs ("Overview", "Activity", "Settings") | Active tab switches on click (`useState`), active gets primary color + border |
 | **Inputs** | Normal input, Disabled input | Focus ring (`--preview-ring` border + translucent shadow), Disabled (`opacity: 0.45`) |
 | **Card** | Title, body text, inline link, badge chip | Link hover (`opacity: 0.75`) |
