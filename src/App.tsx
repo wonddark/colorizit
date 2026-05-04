@@ -6,7 +6,12 @@ import {PaletteScale} from './components/PaletteScale'
 import {BackgroundSwatch} from './components/BackgroundSwatch'
 import {PreviewPanel} from './components/PreviewPanel'
 import {buildAppVars} from './lib/buildAppVars'
-import {generateBackground, generateGrayPalettes, generateHarmonies, generatePalette,} from './lib/generatePalette'
+import {
+  generateBackground,
+  generateGrayPalettes,
+  generateHarmonies,
+  generatePalette,
+} from './lib/generatePalette'
 
 const DEFAULT_COLOR = '#3D63DD'
 
