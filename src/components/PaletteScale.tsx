@@ -42,11 +42,11 @@ export function PaletteScale(props: Readonly<Props>) {
                 className="group relative flex-1"
               >
                 <div
-                  className="h-16 rounded-md flex items-end justify-center pb-1.5"
+                  className="h-2 rounded-md flex items-end justify-center pb-1.5"
                   style={{ background: step.hex }}
                 >
                   <span
-                    className="text-[10px] font-bold"
+                    className="text-[10px] font-bold mb-0.5"
                     style={{ color: useDarkLabel ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.4)' }}
                   >
                     {i + 1}
