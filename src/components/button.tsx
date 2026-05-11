@@ -15,7 +15,7 @@ function Button(props: Readonly<Props>) {
 }
 
 function buildClasses(props: Readonly<Pick<Props, "variant" | "size"|"className">>) {
-    let base = "flex items-center justify-center py-1.5 px-3.5 font-medium rounded-md text-sm hover:brightness-105 transition-all duration-200 ease-in-out active:scale-97 active:brightness-110"
+    let base = "flex cursor-pointer items-center justify-center py-1.5 px-3.5 font-medium rounded-md text-sm hover:brightness-105 transition-all duration-200 ease-in-out active:scale-97 active:brightness-110"
 
     switch (props.variant) {
         case "secondary":
@@ -28,7 +28,7 @@ function buildClasses(props: Readonly<Pick<Props, "variant" | "size"|"className"
             base += " text-(--g11) hover:bg-(--g3)";
             break;
         case "link":
-            base += " text-(--p10) hover:bg-(--g3) underline underline-offset-2";
+            base += " text-(--p10) hover:bg-(--g3)";
             break;
         case "accent":
             base += " text-(--c12) bg-(--c9)";
