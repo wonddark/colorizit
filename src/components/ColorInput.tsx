@@ -64,16 +64,17 @@ export function ColorInput(props: Readonly<Props>) {
   }
 
   return (
-    <div className="flex items-center gap-3">
-      <label className="cursor-pointer shrink-0">
-        <input
+    <div className="flex items-center h-9">
+      <label className="cursor-pointer shrink-0 h-full aspect-square">
+        <span className="sr-only">Color input</span>
+          <input
           type="color"
           value={displayColor}
           onChange={handlePickerChange}
           className="sr-only"
         />
         <div
-          className="w-11 h-11 rounded-xl border border-(--app-border) shadow-md"
+          className="h-full w-full rounded-l-lg border border-(--app-border) shadow-md"
           style={{ background: displayColor }}
         />
       </label>
@@ -83,7 +84,7 @@ export function ColorInput(props: Readonly<Props>) {
         onChange={handleTextChange}
         onBlur={handleTextBlur}
         spellCheck={false}
-        className="font-mono text-sm px-3 py-2 rounded-lg bg-(--app-surface) border border-(--app-border) text-(--app-fg) w-32 focus:outline-none focus:border-(--app-border-strong)"
+        className="font-mono text-sm px-3 py-2 rounded-r-lg bg-(--app-surface) border border-(--app-border) text-(--app-fg) w-32 h-full focus:outline-none focus:border-(--app-border-strong)"
       />
       <span className="text-sm text-(--app-fg-muted) ml-auto">
         Pick a color to generate your palette
