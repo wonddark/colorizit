@@ -3,6 +3,7 @@ import type {BackgroundResult, PaletteResult} from '../lib/generatePalette'
 import Button from "./button.tsx";
 import Input from "./input.tsx";
 import Card from "./card.tsx";
+import Textarea from "./textarea.tsx";
 
 type Props = {
     palette: PaletteResult
@@ -22,7 +23,7 @@ export function DashboardPreview(props: Readonly<Props>) {
     const c = theme === "light" ? complementarPalette?.light ?? [] : complementarPalette?.dark ?? []
 
     const vars = {
-        '--p1': p[0].oklch,
+        '--p1': theme === 'light' ? p[0].oklch : p[11].oklch,
         '--p2': p[1].oklch,
         '--p3': p[2].oklch,
         '--p4': p[3].oklch,
@@ -33,7 +34,7 @@ export function DashboardPreview(props: Readonly<Props>) {
         '--p9': p[8].oklch,
         '--p10': p[9].oklch,
         '--p11': p[10].oklch,
-        '--p12': p[11].oklch,
+        '--p12': theme === "light" ? p[0].oklch : p[11].oklch,
         '--g1': g[0].oklch,
         '--g2': g[1].oklch,
         '--g3': g[2].oklch,
@@ -75,42 +76,59 @@ export function DashboardPreview(props: Readonly<Props>) {
         #${ID} .db-btn:hover { filter: brightness(0.88); }
         #${ID} .db-link:hover { opacity: 0.7; }
       `}</style>
-            <div className="grid lg:grid-cols-3 items-start gap-2">
-                <Card className="">
+            <Card
+                className="grid grid-cols-1 lg:grid-cols-[40%_1fr] gap-4 lg:gap-8">
+                <div className="flex flex-col gap-3">
                     <img
                         src="https://images.pexels.com/photos/10144918/pexels-photo-10144918.jpeg"
                         alt="pexels-image"
                         className="w-full aspect-video rounded-lg"
                     />
-                    <p className="text-lg font-bold mt-3">Starting the
-                        adventure</p>
-                    <p className="text-sm text-(--g11) line-clamp-3">Lorem
-                        ipsum dolor sit amet, consectetur adipisicing elit.
-                        Alias aperiam, deserunt ipsa nostrum odio qui soluta
-                        totam voluptates. Atque est facilis hic numquam
-                        praesentium quidem rem? Commodi delectus eaque
-                        sint!</p>
-                    <Button className="self-start mt-4">Discover
-                        more</Button>
-                </Card>
-                <Card>
-                    <p className="text-2xl font-semibold mb-0.5">Login</p>
-                    <p className="text-(--g11) mb-8 text-sm line-clamp-2">Lorem
-                        ipsum dolor sit amet, consectetur adipisicing elit. Ab,
-                        aspernatur autem dolor doloribus error, eveniet illo
-                        iste modi odit perspiciatis porro praesentium quae quia
-                        quisquam repellat, rerum sit veritatis voluptatibus!</p>
-
-                    <div className="flex flex-col gap-3">
-                        <Input placeholder="john@mailbox.com" label="Email"
-                               id="email"/>
-                        <Input placeholder="********" label="Password"
-                               type="password" id="password"/>
-                        <Button>Login</Button>
-                        <Button variant="link">Register</Button>
+                    <div className="space-y-1">
+                        <p className="text-lg font-bold mt-3">Starting the
+                            adventure</p>
+                        <p className="text-sm text-(--g11) line-clamp-3">Lorem
+                            ipsum dolor sit amet, consectetur adipisicing elit.
+                            Alias aperiam, deserunt ipsa nostrum odio qui soluta
+                            totam voluptates. Atque est facilis hic numquam
+                            praesentium quidem rem? Commodi delectus eaque
+                            sint!</p>
                     </div>
-                </Card>
-            </div>
+                    <Button variant="link" className="self-start mt-4">Discover
+                        more</Button>
+                </div>
+                <div className="flex flex-col gap-3">
+                    <div className="space-y-1">
+                        <label htmlFor="email-input"
+                               className="text-sm font-medium flex items-center gap-1">
+                            Email
+                        </label>
+                        <Input placeholder="john@mailbox.com"
+                               id="email-input"/>
+                    </div>
+                    <div className="space-y-1">
+                        <label htmlFor="password-input"
+                               className="text-sm font-medium">
+                            Password
+                        </label>
+                        <Input placeholder="********"
+                               type="password" id="password-input"/>
+                    </div>
+                    <hr className="border-(--g6) my-3"/>
+                    <div className="flex flex-col gap-1">
+                        <label htmlFor="bio-input"
+                               className="text-sm font-medium">Biography</label>
+                        <Textarea id="bio-input"/>
+                    </div>
+                    <hr className="border-(--g6) my-3"/>
+                    <input type="range"
+                           className="[&::-moz-range-track]:bg-(--p3) [&::-moz-range-progress]:bg-(--p9) [&::-moz-range-thumb]:bg-(--p12) [&::-moz-range-thumb]:border-(--p9)"/>
+                    <div className="flex gap-3 items-center">
+                        <Button variant="default">Save changes</Button>
+                        <Button variant="secondary">Discard</Button>
+                    </div>
+                </div>
+            </Card>
 
             {/* Header */}
             <div style={{
